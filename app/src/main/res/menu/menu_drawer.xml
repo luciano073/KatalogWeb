@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_readings"
+            android:icon="@drawable/ic_book"
+            android:title="@string/readings" />
+        <item
+            android:id="@+id/nav_movies"
+            android:icon="@drawable/ic_film_black_24dp"
+            android:title="@string/movies" />
+        <item
+            android:id="@+id/nav_bluray"
+            android:icon="@drawable/ic_disc_24dp"
+            android:title="@string/media_types" />
+    </group>
+
+    <!--<item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+-->
+</menu>

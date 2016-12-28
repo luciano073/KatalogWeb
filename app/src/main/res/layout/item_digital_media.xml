@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="media"
+            type="br.com.katalog.katalogweb.models.DigitalMedia" />
+
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="5dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:drawablePadding="8dp"
+                android:drawableStart="@{media.mediaType.equalsIgnoreCase(media.BLURAY) ? @drawable/ic_bluray_24dp : @drawable/ic_dvd_24dp}"
+                android:layout_marginBottom="16dp"
+                android:text="@{media.title}"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
+
+
+
+            <TextView
+                android:id="@+id/tvCompany"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="6dp"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_web_16dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@{media.company}"
+                android:visibility="@{(media.company == null || media.company.empty) ? View.GONE : View.VISIBLE}"
+                 />
+
+
+            <TextView
+                android:id="@+id/tvCaseType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginBottom="6dp"
+                android:drawablePadding="8dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:drawableStart="@drawable/ic_book_16dp"
+                android:text="@{media.caseTypeAsString}"
+                android:visibility="@{media.caseTypeAsString == null ? View.GONE : View.VISIBLE}" />
+                <!--android:fontFamily="sans-serif-light"-->
+
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+</layout>
+

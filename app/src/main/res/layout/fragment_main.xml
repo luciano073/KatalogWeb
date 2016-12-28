@@ -1,0 +1,152 @@
+<layout>
+
+    <data>
+
+        <variable
+            name="totalFilm"
+            type="java.lang.String" />
+    </data>
+
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="br.com.katalog.katalogweb.fragments.MainFragment">
+
+
+
+            <TableLayout
+                android:id="@+id/tableMainFrag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:padding="32dp"
+                android:stretchColumns="1">
+
+                <TextView
+                    android:layout_marginBottom="3dp"
+                    android:gravity="center"
+                    android:text="@string/digest"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_height="2dp"
+                    android:background="#ff909090" />
+
+                <TableRow>
+
+                    <TextView
+                        android:drawablePadding="16dp"
+                        android:drawableStart="@drawable/ic_film_24dp"
+                        android:padding="16dp"
+                        android:gravity="bottom"
+                        android:text="@string/films"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/tvTotalFilms"
+                        android:gravity="bottom|end"
+                        android:padding="16dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:drawablePadding="16dp"
+                        android:drawableStart="@drawable/ic_book_24dp"
+                        android:padding="16dp"
+                        android:gravity="bottom"
+                        android:text="@string/books"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/tvTotalBooks"
+                        android:padding="16dp"
+                        android:gravity="bottom|end"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:drawablePadding="16dp"
+                        android:drawableStart="@drawable/ic_digital_media"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:gravity="bottom"
+                        android:paddingTop="16dp"
+                        android:text="@string/media_types"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/tvTotalMedia"
+                        android:gravity="bottom|end"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="16dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow >
+
+                    <TextView
+                        android:id="@+id/tvBluray"
+                        android:layout_gravity="end"
+                        android:drawablePadding="6dp"
+                        android:paddingTop="4dp"
+                        android:drawableStart="@drawable/ic_bluray_24dp"
+                        android:text="24"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                    <TextView
+                        android:id="@+id/tvDVD"
+                        android:layout_gravity="end"
+                        android:paddingTop="4dp"
+                        android:drawablePadding="6dp"
+                        android:drawableStart="@drawable/ic_dvd_24dp"
+                        android:paddingEnd="16dp"
+                        android:text="34"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:drawablePadding="16dp"
+                        android:drawableStart="@drawable/ic_person_24dp"
+                        android:padding="16dp"
+                        android:gravity="bottom"
+                        android:text="@string/artists"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/tvTotalArtists"
+                        android:gravity="bottom|end"
+                        android:padding="16dp"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <View
+                    android:layout_height="2dp"
+                    android:background="#ff909090" />
+            </TableLayout>
+
+
+
+    </FrameLayout>
+
+</layout>
+

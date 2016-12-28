@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress ALL -->
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="java.lang.Long"/>
+        <import type="android.view.View"/>
+        <variable
+            name="film"
+            type="br.com.katalog.katalogweb.models.Film"/>
+        <variable
+            name="imgPoster"
+            type="byte[]"/>
+
+       <!-- <variable
+            name="artistList"
+            type="List&lt;Artist&gt;"/>-->
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="4dp"
+            tools:context=".activities.FilmRegisterActivity">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:id="@+id/imgButtonPoster"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/image_boder"
+                android:elevation="3dp"
+                android:layout_marginBottom="16dp"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:src="@{film.imageUrl}"
+                app:placeholder="@{@drawable/image_select}"
+                app:byteImg="@{imgPoster}"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/edtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName|textCapWords"
+                    android:text="@={film.title}" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/edtOriginalTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:hint="@string/original_title"
+                    android:inputType="textPersonName|textCapWords"
+                    android:text="@={film.originalTitle}" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!--<android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+                <android.support.v7.widget.AppCompatMultiAutoCompleteTextView
+                    android:id="@+id/mactCompany"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/companyProduction"
+                    android:text="@={film.companyProduction}"
+                    android:inputType="textPersonName|textCapWords"
+                    android:imeOptions="actionNext"/>
+
+            </android.support.design.widget.TextInputLayout>-->
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actDirection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/director"
+                    android:text="@={film.director.name}"
+                    android:inputType="textPersonName|textCapWords"
+                    android:imeOptions="actionNext"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actWriter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/script"
+                    android:text="@={film.writer.name}"
+                    android:inputType="textPersonName|textCapWords"
+                    android:imeOptions="actionNext"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/edtVideoLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/video_link"
+                    android:inputType="textUri|textWebEditText"
+                    android:imeOptions="actionNext"
+                    android:text="@={film.videoReview}"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/edtLength"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:hint="@string/length"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:text="@={film.length}"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1"
+                android:layout_marginBottom="16dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/release_date"
+                        android:id="@+id/txtRelease"
+                        android:textSize="@dimen/abc_text_size_medium_material" />
+
+                    <EditText
+                        android:id="@+id/edtRelease"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="date"
+                        android:textAlignment="center"
+                        android:text="@={film.releaseDate}"
+                        app:longToDate="@{true}"
+                        android:drawableEnd="@drawable/ic_date_range_24dp"/>
+                </TableRow>
+
+            </TableLayout>
+
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ratingBar"
+                android:layout_gravity="center_horizontal"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:rating="@={film.stars}"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_cast"
+                android:id="@+id/btnAddElenco"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:letterSpacing="0.2" />
+
+            <TableLayout
+                android:id="@+id/tableCast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/image_boder"
+                android:visibility="@{film.cast.size() > 0 ? View.VISIBLE : View.GONE}"
+                android:stretchColumns="0">
+
+
+            </TableLayout>
+
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_save"
+                android:background="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:letterSpacing="0.2"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:onClick="clickSave" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</layout>
+

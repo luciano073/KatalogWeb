@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "67425352775",
+    "firebase_url": "https://katalog-885c1.firebaseio.com",
+    "project_id": "katalog-885c1",
+    "storage_bucket": "katalog-885c1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67425352775:android:1ab292a3802d3444",
+        "android_client_info": {
+          "package_name": "br.com.katalog.katalogweb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "67425352775-8pad3c904056b5vucpl6lkr5dp64a232.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.katalog.katalogweb",
+            "certificate_hash": "47FD1A5A041FB17440B7CA2362FCA262575ADC0C"
+          }
+        },
+        {
+          "client_id": "67425352775-as2mh57s0hu5m1l8e3ols9sntkvp6jmi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgyovRZhsuvIhpNijHa2HJyoLIyKA0cSE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "67425352775-as2mh57s0hu5m1l8e3ols9sntkvp6jmi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="java.lang.Long"/>
+        <variable
+            name="book"
+            type="br.com.katalog.katalogweb.models.Book"/>
+        <variable
+            name="imgPoster"
+            type="byte[]"/>
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="4dp"
+            tools:context=".activities.BookRegisterActivity">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:id="@+id/imgButtonCover"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/image_boder"
+                android:elevation="3dp"
+                android:layout_marginBottom="16dp"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:src="@{book.imageUrl}"
+                app:placeholder="@{@drawable/image_select}"
+                app:byteImg="@{imgPoster}"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cover_type"
+                android:textAppearance="?android:textAppearanceSmall"/>
+            <RadioGroup
+                android:id="@+id/coverType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/rbHardcover"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hardcover"/>
+                <RadioButton
+                    android:id="@+id/rbPaperback"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/paperback"/>
+
+            </RadioGroup>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/edtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName|textCapWords"
+                    android:text="@={book.title}" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/edtOriginalTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:hint="@string/original_title"
+                    android:inputType="textPersonName|textCapWords"
+                    android:text="@={book.originalTitle}" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+                <MultiAutoCompleteTextView
+                    android:id="@+id/actPublishers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/publishers"
+                    android:text="@={book.publisher}"
+                    android:inputType="textPersonName|textCapWords"
+                    android:imeOptions="actionNext"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actWriter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/author"
+                    android:text="@={book.writer.name}"
+                    android:inputType="textPersonName|textCapWords"
+                    android:imeOptions="actionNext"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actDrawings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/drawings"
+                    android:text="@={book.drawings.name}"
+                    android:inputType="textPersonName|textCapWords"
+                    android:imeOptions="actionNext"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actColors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/colors"
+                    android:text="@={book.colors.name}"
+                    android:inputType="textPersonName|textCapWords"
+                    android:imeOptions="actionNext"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/edtWebReview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/web_review"
+                    android:inputType="textUri|textWebEditText"
+                    android:imeOptions="actionNext"
+                    android:text="@={book.reviewUrl}"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/edtPages"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:hint="@string/pages"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:text="@={book.pages}"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1"
+                android:layout_marginBottom="16dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/release_date"
+                        android:id="@+id/txtRelease"
+                        android:textSize="@dimen/abc_text_size_medium_material" />
+
+                    <EditText
+                        android:id="@+id/edtRelease"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="date"
+                        android:textAlignment="center"
+                        android:text="@={book.releaseDate}"
+                        app:longToDate="@{true}"
+                        android:drawableEnd="@drawable/ic_release_date_24dp"/>
+                </TableRow>
+
+            </TableLayout>
+
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_save"
+                android:background="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:letterSpacing="0.2"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:onClick="clickSave" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!--<RelativeLayout
+        android:id="@+id/activity_book_register"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="br.com.katalog.katalogweb.activities.BookRegisterActivity">
+
+    </RelativeLayout>-->
+</layout>
+

@@ -1,0 +1,117 @@
+<resources>
+    <string name="app_name">KatalogWeb</string>
+    <string name="web_client_id">67425352775-as2mh57s0hu5m1l8e3ols9sntkvp6jmi.apps.googleusercontent.com</string>
+    <string name="erro_login">Login falhou.</string>
+    <string name="btn_save">Salvar</string>
+    <string name="search_film">Buscar Filme</string>
+    <string name="empty_list">Nenhum dado a ser mostrado.</string>
+    <string name="title">Título</string>
+    <string name="logout">Logout</string>
+    <string name="original_title">Título Original</string>
+    <string name="companyProduction">Estúdios</string>
+    <string name="director">Direção</string>
+    <string name="script">Roteiro</string>
+    <string name="length">Duração(min)</string>
+    <string name="release_date">Lançamento</string>
+    <string name="video_link">Video review</string>
+    <string name="cast">Elenco</string>
+    <string name="format_original_title">\" %1$s (%2$d) \"</string>
+    <string name="format_length">%1$d min.</string>
+    <string name="format_pages">%1$d páginas</string>
+    <string name="save_film">Salvando filme...</string>
+    <string name="image_removed">Imagem removida: %1$d - Filme: %2$d</string>
+    <string name="add_cast">Adicionar Elenco</string>
+    <string name="cant_be_empty">Não pode ser vazio</string>
+    <string name="actor_actress">Ator/Atriz</string>
+    <string name="short_name">Nome muito curto</string>
+    <string name="new_filme">Novo filme</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="home">Início</string>
+    <string name="readings">Leituras</string>
+    <string name="movies">Filmes</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="estatistics">ESTATÍSTICAS</string>
+    <string name="films_upper_case">FILMES</string>
+    <string name="books_upper_case">LIVROS</string>
+    <string name="artists_upper_case">ARTISTAS</string>
+    <string name="digest">Resumo</string>
+    <string name="films">Filmes</string>
+    <string name="no_data">Banco de dados está vazio</string>
+    <string name="books">Livros</string>
+    <string name="media_types">Blu-ray / DVD</string>
+    <string name="artists">Artistas</string>
+    <string name="pages">Páginas</string>
+    <string name="publishers">Editoras</string>
+    <string name="author">Autor(a)</string>
+    <string name="new_book">Novo livro</string>
+    <string name="save_book">Salvando livro...</string>
+    <string name="drawings">Desenhos</string>
+    <string name="colors">Cores</string>
+    <string name="web_review">Web Review</string>
+    <string name="cover_type">Acabamento</string>
+    <string name="hardcover">Capa dura</string>
+    <string name="paperback">Capa cartão</string>
+    <string name="search_book">Pesquisar livro...</string>
+    <string name="media_type">Tipo de midia</string>
+    <string name="bluray">Blu-ray</string>
+    <string name="dvd">DVD</string>
+    <string name="film_title">Título do filme</string>
+    <string name="select_case_type">Tipo de embalagem:</string>
+    <string name="company">Produtora</string>
+    <string name="film">Filme</string>
+    <string name="new_media">Nova midia digital</string>
+    <string name="search_content">Buscar conteúdo...</string>
+    <string name="search_media">Procurar midia...</string>
+
+    <string-array name="publishers">
+        <item>Panini</item>
+        <item>Abril</item>
+        <item>Veneta</item>
+        <item>Editora Globo</item>
+        <item>HQM</item>
+        <item>Devir</item>
+        <item>Conrad</item>
+        <item>DC Comics</item>
+        <item>Marvel</item>
+        <item>Icon</item>
+        <item>Image</item>
+        <item>Vertigo</item>
+        <item>Mythos</item>
+        <item>Dark Horse</item>
+        <item>LeYa</item>
+        <item>Novatec</item>
+    </string-array>
+
+    <string-array name="case_types">
+        <item>Amaray</item>
+        <item>Box</item>
+        <item>Digipak</item>
+        <item>Digistak</item>
+        <item>SteelBook</item>
+        <item>BookCase</item>
+    </string-array>
+
+    <string-array name="movie_companies">
+        <item>Disney</item>
+        <item>Warner</item>
+        <item>20th Century Fox</item>
+        <item>Universal</item>
+        <item>Paramount</item>
+        <item>Sony (Columbia)</item>
+        <item>Flashstar</item>
+        <item>Europa Filmes</item>
+        <item>Focus Filmes</item>
+        <item>Paris Filmes</item>
+        <item>Playarte</item>
+        <item>Versátil</item>
+        <item>Imagem Filmes</item>
+        <item>MTV</item>
+    </string-array>
+</resources>
