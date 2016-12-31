@@ -180,11 +180,13 @@ implements DatePickerFragment.DatePickerFragmentListener,
                         } else if (mDirector == null
                                 && !TextUtils.isEmpty(directorName)) {
                             mDirector = mArtistDAO.createAndInsert(directorName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
                             mBinding.getFilm().setDirector(mDirector);
 
                         } else if (mDirector != null && !TextUtils.isEmpty(directorName) &&
                                 !directorName.equals(mDirector.getName())) {
                             mDirector = mArtistDAO.createAndInsert(directorName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
                             mBinding.getFilm().setDirector(mDirector);
                         } else if (mDirector != null && TextUtils.isEmpty(directorName)){
                             mDirector = null;
@@ -200,11 +202,13 @@ implements DatePickerFragment.DatePickerFragmentListener,
                         } else if (mWriter == null
                                 && !TextUtils.isEmpty(writerName)) {
                             mWriter = mArtistDAO.createAndInsert(writerName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
                             mBinding.getFilm().setWriter(mWriter);
 
                         } else if (mWriter != null && !TextUtils.isEmpty(writerName) &&
                                 !mWriter.getName().equals(writerName)) {
                             mWriter = mArtistDAO.createAndInsert(writerName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
                             mBinding.getFilm().setWriter(mWriter);
                         } else if (mWriter != null && TextUtils.isEmpty(writerName)){
                             mWriter = null;

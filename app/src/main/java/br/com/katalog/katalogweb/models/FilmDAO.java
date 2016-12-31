@@ -191,7 +191,7 @@ public class FilmDAO implements
         List<Artist> cast = film.getCast();
 //        Log.d(TAG, "director: " + director.getName());
 
-        if (director != null) {
+        if (director != null && director.getName() != null) {
             artistDatabase.child(director.getId())
                     .child(Artist.DatabaseFields.DIRECTED)
                     .child(film.getId())
@@ -202,7 +202,7 @@ public class FilmDAO implements
                     .setValue(director.getName());
         }
 
-        if (writer != null) {
+        if (writer != null && writer.getName() != null) {
             artistDatabase.child(writer.getId())
                     .child(Artist.DatabaseFields.WROTE)
                     .child(film.getId())

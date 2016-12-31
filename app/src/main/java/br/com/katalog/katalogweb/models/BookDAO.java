@@ -113,7 +113,7 @@ public class BookDAO {
         Artist writer = book.getWriter();
         Artist drawings = book.getDrawings();
 
-        if (colors != null) {
+        if (colors != null && colors.getName() != null) {
             mArtistRef.child(colors.getId())
                     .child(Constants.ARTIST_DATABASE_CHILD_PAINTED)
                     .child(book.getId())
@@ -124,7 +124,7 @@ public class BookDAO {
                     .setValue(colors.getName());
         }
 
-        if (writer != null) {
+        if (writer != null && writer.getName() != null) {
             mArtistRef.child(writer.getId())
                     .child(Constants.ARTIST_DATABASE_CHILD_WROTE)
                     .child(book.getId())
@@ -135,7 +135,7 @@ public class BookDAO {
                     .setValue(writer.getName());
         }
 
-        if (drawings != null) {
+        if (drawings != null && drawings.getName() != null) {
             mArtistRef.child(drawings.getId())
                     .child(Constants.ARTIST_DATABASE_CHILD_DREW)
                     .child(book.getId())
@@ -151,19 +151,19 @@ public class BookDAO {
         Artist colors = book.getColors();
         Artist drawings = book.getDrawings();
         Artist writer = book.getWriter();
-        if (colors != null){
+        if (colors != null && colors.getName() != null){
             mArtistRef.child(colors.getId())
                     .child(Constants.ARTIST_DATABASE_CHILD_PAINTED)
                     .child(book.getId())
                     .removeValue();
         }
-        if (drawings != null){
+        if (drawings != null && drawings.getName() != null){
             mArtistRef.child(drawings.getId())
                     .child(Constants.ARTIST_DATABASE_CHILD_DREW)
                     .child(book.getId())
                     .removeValue();
         }
-        if (writer != null){
+        if (writer != null && writer.getName() != null){
             mArtistRef.child(colors.getId())
                     .child(Constants.ARTIST_DATABASE_CHILD_WROTE)
                     .child(book.getId())

@@ -14,10 +14,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import br.com.katalog.katalogweb.utils.StringUtils;
+
+import static br.com.katalog.katalogweb.R.string.artists;
 
 /**
  * Created by luciano on 17/12/2016.
@@ -215,17 +219,17 @@ public class Book implements Parcelable {
         if (writer == null && drawings == null && colors == null)
             return "";
         StringBuilder builder = new StringBuilder();
-        List<String> artists = new ArrayList<>();
+        Set<String> artistSet = new HashSet<>();
+        if (colors != null)
+            artistSet.add(colors);
+        if (drawings != null)
+            artistSet.add(drawings);
         if (writer != null)
-            artists.add(writer);
-        if (drawings != null && !writer.equalsIgnoreCase(drawings))
-            artists.add(drawings);
-        if (colors != null && !drawings.equalsIgnoreCase(colors))
-            artists.add(colors);
+            artistSet.add(writer);
 
 //        Collections.shuffle(artists);
 
-        Iterator<String> iterator = artists.iterator();
+        Iterator<String> iterator = artistSet.iterator();
         while (iterator.hasNext()) {
             builder.append(iterator.next());
             if (iterator.hasNext()) {

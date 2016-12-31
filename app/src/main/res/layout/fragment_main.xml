@@ -7,8 +7,170 @@
             type="java.lang.String" />
     </data>
 
-
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="br.com.katalog.katalogweb.fragments.MainFragment">
+
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:padding="32dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/digest"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="#ff909090" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:id="@+id/tvFilms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="16dp"
+                    android:drawableStart="@drawable/ic_film_24dp"
+                    android:gravity="bottom"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/films"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <TextView
+                    android:id="@+id/tvTotalFilms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="bottom|end"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp" />
+
+                <TextView
+                    android:id="@+id/tvBooks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:drawableStart="@drawable/ic_book_24dp"
+                    android:drawablePadding="16dp"
+                    android:gravity="bottom"
+                    android:layout_marginBottom="16dp"
+                    android:layout_below="@+id/tvFilms"
+                    android:text="@string/books"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <TextView
+                    android:id="@+id/tvTotalBooks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="16dp"
+                    android:layout_below="@+id/tvFilms"
+                    android:gravity="bottom"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp" />
+
+                <TextView
+                    android:id="@+id/tvMedias"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:drawableStart="@drawable/ic_digital_media"
+                    android:drawablePadding="16dp"
+                    android:gravity="bottom"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_marginBottom="8dp"
+                    android:layout_below="@+id/tvBooks"
+                    android:text="@string/media_types"/>
+                <TextView
+                    android:id="@+id/tvTotalMedia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="bottom"
+                    android:layout_below="@+id/tvBooks"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp" />
+                <TextView
+                    android:id="@+id/tvBluray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@+id/tvMedias"
+                    android:layout_marginBottom="8dp"
+                    android:drawableStart="@drawable/ic_bluray_24dp"
+                    android:drawablePadding="6dp"
+                    android:paddingEnd="84dp"/>
+                <TextView
+                    android:id="@+id/tvDVD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@+id/tvMedias"
+                    android:drawableStart="@drawable/ic_dvd_24dp"
+                    android:drawablePadding="6dp"
+                    android:layout_marginBottom="8dp"
+                    android:paddingStart="84dp"/>
+
+                <TextView
+                    android:id="@+id/tvArtists"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_person_24dp"
+                    android:drawablePadding="16dp"
+                    android:gravity="bottom"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/tvBluray"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/artists"/>
+                <TextView
+                    android:id="@+id/tvTotalArtists"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tvDVD"
+                    android:gravity="bottom"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="#ff909090" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -147,6 +309,6 @@
 
 
     </FrameLayout>
-
+-->
 </layout>
 

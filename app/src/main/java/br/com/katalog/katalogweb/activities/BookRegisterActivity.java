@@ -176,6 +176,29 @@ public class BookRegisterActivity extends AppCompatActivity
         public void onFocusChange(View view, boolean hasFocus) {
             if (!hasFocus) {
                 switch (view.getId()) {
+                    case R.id.actWriter:
+                        Artist writer = mBinding.getBook().getWriter();
+                        String writerName = mBinding.actWriter.getText().toString().trim();
+                        if (!TextUtils.isEmpty(writerName) && writerName.length() < 4) {
+                            mBinding.actWriter.setError("Name is too short!");
+                            mBinding.actWriter.selectAll();
+                            return;
+                        } else if (writer == null
+                                && !TextUtils.isEmpty(writerName)) {
+                            mWriter = mArtistDAO.createAndInsert(writerName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
+                            mBinding.getBook().setWriter(mWriter);
+
+                        } else if (mWriter != null && !TextUtils.isEmpty(writerName) &&
+                                !mWriter.getName().equals(writerName)) {
+                            mWriter = mArtistDAO.createAndInsert(writerName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
+                            mBinding.getBook().setWriter(mWriter);
+                        } else if (mWriter != null && TextUtils.isEmpty(writerName)) {
+                            mWriter = null;
+                            mBinding.getBook().setWriter(null);
+                        }
+                        break;
                     case R.id.actColors:
                         String colorsName = mBinding.actColors.getText().toString().trim();
                         if (!TextUtils.isEmpty(colorsName) && colorsName.length() < 4) {
@@ -185,37 +208,20 @@ public class BookRegisterActivity extends AppCompatActivity
                         } else if (mColors == null
                                 && !TextUtils.isEmpty(colorsName)) {
                             mColors = mArtistDAO.createAndInsert(colorsName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
                             mBinding.getBook().setColors(mColors);
 
                         } else if (mColors != null && !TextUtils.isEmpty(colorsName) &&
                                 !colorsName.equals(mColors.getName())) {
                             mColors = mArtistDAO.createAndInsert(colorsName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
                             mBinding.getBook().setColors(mColors);
                         } else if (mColors != null && TextUtils.isEmpty(colorsName)) {
                             mColors = null;
                             mBinding.getBook().setColors(null);
                         }
                         break;
-                    case R.id.actWriter:
-                        String writerName = mBinding.actWriter.getText().toString().trim();
-                        if (!TextUtils.isEmpty(writerName) && writerName.length() < 4) {
-                            mBinding.actWriter.setError("Name is too short!");
-                            mBinding.actWriter.selectAll();
-                            return;
-                        } else if (mWriter == null
-                                && !TextUtils.isEmpty(writerName)) {
-                            mWriter = mArtistDAO.createAndInsert(writerName);
-                            mBinding.getBook().setWriter(mWriter);
 
-                        } else if (mWriter != null && !TextUtils.isEmpty(writerName) &&
-                                !mWriter.getName().equals(writerName)) {
-                            mWriter = mArtistDAO.createAndInsert(writerName);
-                            mBinding.getBook().setWriter(mWriter);
-                        } else if (mWriter != null && TextUtils.isEmpty(writerName)) {
-                            mWriter = null;
-                            mBinding.getBook().setWriter(null);
-                        }
-                        break;
                     case R.id.actDrawings:
                         String drawingName = mBinding.actDrawings.getText().toString().trim();
                         if (!TextUtils.isEmpty(drawingName) && drawingName.length() < 4) {
@@ -225,11 +231,13 @@ public class BookRegisterActivity extends AppCompatActivity
                         } else if (mDrawings == null
                                 && !TextUtils.isEmpty(drawingName)) {
                             mDrawings = mArtistDAO.createAndInsert(drawingName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
                             mBinding.getBook().setDrawings(mDrawings);
 
                         } else if (mDrawings != null && !TextUtils.isEmpty(drawingName) &&
                                 !mDrawings.getName().equals(drawingName)) {
                             mDrawings = mArtistDAO.createAndInsert(drawingName);
+                            mArtistArrayAdapter.notifyDataSetChanged();
                             mBinding.getBook().setDrawings(mDrawings);
                         } else if (mDrawings != null && TextUtils.isEmpty(drawingName)) {
                             mDrawings = null;
@@ -332,9 +340,9 @@ public class BookRegisterActivity extends AppCompatActivity
     private void saveBook() {
         Book book = mBinding.getBook();
         BookDAO bookDAO = BookDAO.getInstance();
-        book.setWriter(mWriter);
-        book.setDrawings(mDrawings);
-        book.setColors(mColors);
+//        book.setWriter(mWriter);
+//        book.setDrawings(mDrawings);
+//        book.setColors(mColors);
         if (mBinding.rbHardcover.isChecked()){
             book.setCoverType(Book.HARDCOVER);
         }
