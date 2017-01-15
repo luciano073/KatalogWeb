@@ -56,8 +56,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_movie_black_16dp"
+                    android:drawablePadding="@dimen/drawablePadding_item_list"
+                    android:drawableStart="@drawable/ic_movie_creation_18dp"
                     android:fontFamily="sans-serif-light"
                     android:text="@{film.director.name}"
                     android:textAlignment="center"
@@ -70,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:drawablePadding="4dp"
+                    android:drawablePadding="@dimen/drawablePadding_item_list"
                     android:drawableStart="@drawable/ic_people_16dp"
                     android:fontFamily="sans-serif-light"
                     android:text="@{film.castToListViewShow()}"
@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:drawablePadding="4dp"
+                    android:drawablePadding="@dimen/drawablePadding_item_list"
                     android:drawableStart="@drawable/ic_watch_later_16dp"
                     android:fontFamily="sans-serif-light"
                     android:text="@{@string/format_length(film.length)}"
@@ -98,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:drawablePadding="4dp"
+                    android:drawablePadding="@dimen/drawablePadding_item_list"
                     android:drawableStart="@drawable/youtube_play"
                     android:fontFamily="sans-serif-light"
                     android:autoLink="web"
@@ -111,21 +111,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:drawablePadding="4dp"
+                    android:drawablePadding="@dimen/drawablePadding_item_list"
                     android:drawableStart="@drawable/ic_grade_16dp"
                     android:fontFamily="sans-serif-light"
                     android:text="@{film.stars}"
                     android:textSize="13sp"/>
 
-                <!--<RatingBar
+                <TextView
+                    android:id="@+id/tvWatched"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ratingBar"
-                    android:layout_gravity="left"
-                    android:numStars="5"
-                    android:rating="@{film.stars}"
-                    android:isIndicator="true"
-                    style="?android:attr/ratingBarStyleSmall"/>-->
+                    android:layout_gravity="start"
+                    android:drawablePadding="@dimen/drawablePadding_item_list"
+                    android:drawableStart="@drawable/ic_watched_18dp"
+                    android:fontFamily="sans-serif-light"
+                    android:textSize="13sp"
+                    android:text="@{film.watchDateAsString}"
+                    android:visibility="@{film.watchDateAsString == null ? View.GONE : View.VISIBLE}"/>
+
             </LinearLayout>
 
             <ImageView

@@ -13,6 +13,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value="br.com.katalog.katalogweb.activities.SearchResultsActivity" />
+
         <activity
             android:name=".activities.MainActivity"
             android:launchMode="singleTop">
@@ -46,12 +50,30 @@
                 android:value=".activities.MainActivity" />
             >
         </activity>
-        <activity android:name=".activities.DigiMediaRegisterActivity"
+        <activity
+            android:name=".activities.DigiMediaRegisterActivity"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity"/>
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.SearchResultsActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".activities.ArtistDetailsActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme">
 
         </activity>
     </application>

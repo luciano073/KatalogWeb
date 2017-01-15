@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.katalog.katalogweb.R;
-import br.com.katalog.katalogweb.activities.BookRegisterActivity;
 import br.com.katalog.katalogweb.activities.DigiMediaRegisterActivity;
 import br.com.katalog.katalogweb.adapters.DigiMediaAdapter;
 import br.com.katalog.katalogweb.adapters.MediaSearchAdapter;
@@ -59,7 +58,7 @@ public class DigiMediaListFragment extends Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMediaRef = FirebaseDatabase.getInstance()
-                .getReference(Constants.DIGITAL_MEDIA_DATABASE_ROOT_NODE);
+                .getReference(Constants.DIGITAL_MEDIA_DBREF);
         mMediaRef.keepSynced(true);
 
         mAdapter = new DigiMediaAdapter(mMediaRef, new DigiMediaListener() {

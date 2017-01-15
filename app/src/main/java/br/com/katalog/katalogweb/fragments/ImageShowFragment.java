@@ -1,22 +1,17 @@
 package br.com.katalog.katalogweb.fragments;
 
 import android.app.Dialog;
+import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-
-import com.google.android.gms.tasks.Task;
 
 import br.com.katalog.katalogweb.R;
 import br.com.katalog.katalogweb.databinding.FragmentImageShowBinding;
-
-import static android.R.attr.button;
 
 /**
  * Created by luciano on 22/09/2016.
@@ -42,7 +37,7 @@ public class ImageShowFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.MY_DIALOG);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.ImageDialog);
 //        mImageUri = getArguments().getString("uri");
     }
 
@@ -57,22 +52,8 @@ public class ImageShowFragment extends DialogFragment {
                 container,
                 false
         );
-        /*View view = inflater.inflate(R.layout.fragment_image_show, container, false);
-        ImageView imageView = (ImageView) view.findViewById(R.id.iv_dialog);
-        Button button = (Button) view.findViewById(R.id.btn_dismiss);*/
 
-       /* DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .displayer(new RoundedBitmapDisplayer(15))
-                .build();
-        imageLoader = ImageLoader.getInstance();
-        imageLoader.displayImage(mImageUri, imageView, options);*/
-
-        /*button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });*/
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         binding.setImageUrl(getArguments().getString("uri"));
 
@@ -90,14 +71,32 @@ public class ImageShowFragment extends DialogFragment {
         super.onStart();
         Dialog dialog = getDialog(); //dica para controlar o tamanho da tela do dialog
         if (dialog != null) {
-            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+//            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+//            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            Point size = new Point();
+            getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+            int width = size.x;
+            int height = (int) (width / 0.65);
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
 
         }
 
-
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        /*Display display = getActivity().getWindowManager().getDefaultDisplay();
+        int height = (int) (display.getHeight() * 0.9);
+        int width = (int) (height * 0.65);
+        binding.mainView.getLayoutParams().height = height;
+        binding.mainView.getLayoutParams().width = width;*/
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    }
 }

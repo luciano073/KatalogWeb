@@ -41,14 +41,16 @@ import br.com.katalog.katalogweb.models.FilmDAO;
 import br.com.katalog.katalogweb.utils.ImageUtils;
 
 public class FilmRegisterActivity extends AppCompatActivity
-implements DatePickerFragment.DatePickerFragmentListener,
-        CastDialogFragment.AddingCast{
+        implements DatePickerFragment.DatePickerFragmentListener,
+        CastDialogFragment.AddingCast {
 
     private static final int GALLERY_INTENT = 2;
     private static final String TAG = "FilmRegisterActivity";
     public static final String EXTRA_FILM = "film";
+    public static final int RELEASE_DATE = 1;
+    public static final int WATCH_DATE = 2;
     ActivityFilmRegisterBinding mBinding;
-//    private DatabaseReference mArtistDatabase;
+    //    private DatabaseReference mArtistDatabase;
 //    private DatabaseReference mFilmDatabase;
     private StorageReference mStorage;
     private ProgressDialog mProgressDialog;
@@ -65,9 +67,9 @@ implements DatePickerFragment.DatePickerFragmentListener,
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_film_register);
 
-        mProgressDialog     = new ProgressDialog(this);
-        mImageToUpload      = new byte[0];
-        mArtistDAO          = ArtistDAO.getInstance();
+        mProgressDialog = new ProgressDialog(this);
+        mImageToUpload = new byte[0];
+        mArtistDAO = ArtistDAO.getInstance();
 //        mDirector           = new Artist();
 //        mWriter             = new Artist();
 
@@ -94,16 +96,10 @@ implements DatePickerFragment.DatePickerFragmentListener,
             mOldFilm = new Film(film); // clone object
 
 
-            if (film.getWriter() != null && film.getWriter().getName() != null){
-                mWriter = mOldFilm.getWriter();
-            }
-            if (film.getDirector() != null && film.getDirector().getName() != null){
-                mDirector = mOldFilm.getDirector();
-            }
 
-            List<Artist> list = mOldFilm.getCast();
-            if (list.size() > 0){
-                for (Artist artist : list){
+            List<Artist> list = film.getCast();
+            if (list.size() > 0) {
+                for (Artist artist : list) {
                     insertRowArtist(artist);
                 }
             }
@@ -151,7 +147,16 @@ implements DatePickerFragment.DatePickerFragmentListener,
             @Override
             public void onClick(View view) {
                 DatePickerFragment fragment =
-                        DatePickerFragment.newInstance(mBinding.getFilm().getReleaseDate());
+                        DatePickerFragment.newInstance(mBinding.getFilm().getReleaseDate(), RELEASE_DATE);
+                fragment.show(getFragmentManager(), DatePickerFragment.TAG);
+            }
+        });
+
+        mBinding.edtWatcheAt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerFragment fragment =
+                        DatePickerFragment.newInstance(mBinding.getFilm().getWatchDate(), WATCH_DATE);
                 fragment.show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
@@ -169,54 +174,85 @@ implements DatePickerFragment.DatePickerFragmentListener,
     View.OnFocusChangeListener handlerNewArtist = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View view, boolean hasFocus) {
-            if (!hasFocus) {
-                switch (view.getId()) {
-                    case R.id.actDirection:
+
+            switch (view.getId()) {
+                case R.id.actDirection:
+                    if (!hasFocus) {
+                        Artist director = mBinding.getFilm().getDirector();
                         String directorName = mBinding.actDirection.getText().toString().trim();
                         if (!TextUtils.isEmpty(directorName) && directorName.length() < 4) {
-                            mBinding.actDirection.setError("Name is too short!");
-                            mBinding.actDirection.selectAll();
-                            return;
-                        } else if (mDirector == null
-                                && !TextUtils.isEmpty(directorName)) {
-                            mDirector = mArtistDAO.createAndInsert(directorName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
-                            mBinding.getFilm().setDirector(mDirector);
 
-                        } else if (mDirector != null && !TextUtils.isEmpty(directorName) &&
-                                !directorName.equals(mDirector.getName())) {
-                            mDirector = mArtistDAO.createAndInsert(directorName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
-                            mBinding.getFilm().setDirector(mDirector);
-                        } else if (mDirector != null && TextUtils.isEmpty(directorName)){
-                            mDirector = null;
-                            mBinding.getFilm().setDirector(null);
+                            //question solution in stackoverflow.com/questions/
+                            // 3003062/focus-issue-with-multiple-edittexts
+                            mBinding.actDirection.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBinding.actDirection.setError("Name is too short!");
+                                    mBinding.actDirection.selectAll();
+                                    mBinding.actDirection.requestFocus();
+                                }
+                            });
+                        } else if (director == null && !TextUtils.isEmpty(directorName)) {
+                            mBinding.getFilm().setWriter(mDirector);
+                            if (!isNewFilm) { //em caso de atualização evita duplicação de artista
+                                mBinding.getFilm().setWriter(mOldFilm.getDirector());
+                                mDirector = mOldFilm.getDirector();
+                            }
+                            if (mDirector == null) {
+                                mDirector = mArtistDAO.createAndInsert(directorName);
+                                mBinding.getFilm().setDirector(mDirector);
+                            } else if (mDirector != null && !mDirector.getName().equals(directorName)) {
+                                mDirector = mArtistDAO.createAndInsert(directorName);
+                                mBinding.getFilm().setDirector(mDirector);
+                            }
+
                         }
-                        break;
-                    case R.id.actWriter:
-                        String writerName   = mBinding.actWriter.getText().toString().trim();
+                    } else {
+                        //só entra quando recebe o foco.
+                        mBinding.getFilm().setDirector(null);//Remember request focus to other field
+                        // when save the book to avoid field set to null.
+                    }
+                    break;
+                case R.id.actWriter:
+                    if (!hasFocus) {
+                        Artist writer = mBinding.getFilm().getWriter();
+                        String writerName = mBinding.actWriter.getText().toString().trim();
                         if (!TextUtils.isEmpty(writerName) && writerName.length() < 4) {
-                            mBinding.actWriter.setError("Name is too short!");
-                            mBinding.actWriter.selectAll();
-                            return;
-                        } else if (mWriter == null
-                                && !TextUtils.isEmpty(writerName)) {
-                            mWriter = mArtistDAO.createAndInsert(writerName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
-                            mBinding.getFilm().setWriter(mWriter);
 
-                        } else if (mWriter != null && !TextUtils.isEmpty(writerName) &&
-                                !mWriter.getName().equals(writerName)) {
-                            mWriter = mArtistDAO.createAndInsert(writerName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
+                            //question solution in stackoverflow.com/questions/
+                            // 3003062/focus-issue-with-multiple-edittexts
+                            mBinding.actWriter.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBinding.actWriter.setError("Name is too short!");
+                                    mBinding.actWriter.selectAll();
+                                    mBinding.actWriter.requestFocus();
+                                }
+                            });
+                        } else if (writer == null && !TextUtils.isEmpty(writerName)) {
                             mBinding.getFilm().setWriter(mWriter);
-                        } else if (mWriter != null && TextUtils.isEmpty(writerName)){
-                            mWriter = null;
-                            mBinding.getFilm().setWriter(null);
+                            if (!isNewFilm) { //em caso de atualização evita duplicação de artista
+                                mBinding.getFilm().setWriter(mOldFilm.getWriter());
+                                mWriter = mOldFilm.getWriter();
+                            }
+                            if (mWriter == null) {
+                                mWriter = mArtistDAO.createAndInsert(writerName);
+                                mBinding.getFilm().setWriter(mWriter);
+                            } else if (mWriter != null && !mWriter.getName().equals(writerName)) {
+                                mWriter = mArtistDAO.createAndInsert(writerName);
+                                mBinding.getFilm().setWriter(mWriter);
+                            }
+
                         }
-                        break;
-                }
+                    } else {
+                        //só entra quando recebe o foco.
+                        mBinding.getFilm().setWriter(null);//Remember request focus to other field
+                        // when save the book to avoid field set to null.
+                    }
+                    break;
             }
+
+
         }
     };
 
@@ -233,12 +269,12 @@ implements DatePickerFragment.DatePickerFragmentListener,
         super.onRestoreInstanceState(savedInstanceState);
         mBinding.setFilm((Film) savedInstanceState.getParcelable("film"));
 
-        List<Artist> list = mBinding.getFilm().getCast();
+       /* List<Artist> list = mBinding.getFilm().getCast();
         if (list.size() > 0){
             for (Artist artist : list){
                 insertRowArtist(artist);
             }
-        }
+        }*/
 
         mImageToUpload = savedInstanceState.getByteArray("image");
         mBinding.setImgPoster(mImageToUpload);
@@ -254,9 +290,9 @@ implements DatePickerFragment.DatePickerFragmentListener,
     protected void onResume() {
         super.onResume();
         ActionBar actionBar = getSupportActionBar();
-        if (isNewFilm){
+        if (isNewFilm) {
             actionBar.setTitle(getString(R.string.new_filme));
-        } else{
+        } else {
             actionBar.setTitle(mBinding.getFilm().getTitle());
         }
     }
@@ -292,7 +328,7 @@ implements DatePickerFragment.DatePickerFragmentListener,
 
     public void clickSave(View view) {
 
-        if (TextUtils.isEmpty(mBinding.edtTitle.getText().toString().trim())){
+        if (TextUtils.isEmpty(mBinding.edtTitle.getText().toString().trim())) {
             mBinding.edtTitle.setError(getString(R.string.cant_be_empty));
             mBinding.edtTitle.requestFocus();
             return;
@@ -301,7 +337,7 @@ implements DatePickerFragment.DatePickerFragmentListener,
         mProgressDialog.setMessage(getString(R.string.save_film));
         mProgressDialog.show();
 
-        if (mImageToUpload.length > 0){
+        if (mImageToUpload.length > 0) {
             StorageReference filePath =
                     mStorage.child("images")
                             .child(DateFormat.format("yyyy-MM-dd_hhmmss", new Date()).toString());
@@ -323,12 +359,15 @@ implements DatePickerFragment.DatePickerFragmentListener,
 
     }
 
-    private void saveFilm(){
+    private void saveFilm() {
+        mBinding.edtTitle.requestFocus();
         Film film = mBinding.getFilm();
         FilmDAO filmDAO = FilmDAO.getInstance();
-        film.setWriter(mWriter);
-        film.setDirector(mDirector);
-//        Log.d(TAG, "saveFilm: " + mDirector.getId());
+        if (TextUtils.isEmpty(mBinding.actDirection.getText().toString().trim()))
+            film.setDirector(null);
+        if (TextUtils.isEmpty(mBinding.actWriter.getText().toString().trim()))
+            film.setWriter(null);
+
         if (isNewFilm) {
             film.setId(filmDAO.insert(film));
         } else {
@@ -341,7 +380,7 @@ implements DatePickerFragment.DatePickerFragmentListener,
     }
 
     @Override
-    public void onDateListener(int year, int month, int dayOfYear) {
+    public void onDateListener(int view, int year, int month, int dayOfYear) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dayOfYear);
@@ -353,15 +392,31 @@ implements DatePickerFragment.DatePickerFragmentListener,
             locale = getResources().getConfiguration().locale;
         }
 
-//        Log.d(TAG, "locale: " + locale.getDisplayCountry());
-        java.text.DateFormat dateFormat =
-                java.text.DateFormat.getDateInstance();
-        if (locale.getDisplayCountry().matches("(?i).*bra[sz]il.*")){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MMM/yyyy");
-            mBinding.edtRelease.setText(simpleDateFormat.format(date));
-        }else {
+        if (view == RELEASE_DATE) {
 
-            mBinding.edtRelease.setText(dateFormat.format(date));
+//        Log.d(TAG, "locale: " + locale.getDisplayCountry());
+            java.text.DateFormat dateFormat =
+                    java.text.DateFormat.getDateInstance();
+            if (locale.getDisplayCountry().matches("(?i).*bra[sz]il.*")) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MMM/yyyy");
+                mBinding.edtRelease.setText(simpleDateFormat.format(date));
+            } else {
+
+                mBinding.edtRelease.setText(dateFormat.format(date));
+            }
+        }
+        if (view == WATCH_DATE) {
+
+//        Log.d(TAG, "locale: " + locale.getDisplayCountry());
+            java.text.DateFormat dateFormat =
+                    java.text.DateFormat.getDateInstance();
+            if (locale.getDisplayCountry().matches("(?i).*bra[sz]il.*")) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MMM/yyyy");
+                mBinding.edtWatcheAt.setText(simpleDateFormat.format(date));
+            } else {
+
+                mBinding.edtWatcheAt.setText(dateFormat.format(date));
+            }
         }
 //        java.text.DateFormat dateFormat = DateFormat.getDateFormat(this);
     }
@@ -398,7 +453,7 @@ implements DatePickerFragment.DatePickerFragmentListener,
             @Override
             public void onClick(View v) {
                 mBinding.getFilm().getCast().remove(v.getTag());
-                if (mBinding.getFilm().getCast().size() == 0){
+                if (mBinding.getFilm().getCast().size() == 0) {
                     mBinding.tableCast.setVisibility(View.GONE);
                 }
                 v.setVisibility(View.GONE);

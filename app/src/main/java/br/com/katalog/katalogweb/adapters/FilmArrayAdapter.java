@@ -16,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.katalog.katalogweb.models.Artist;
 import br.com.katalog.katalogweb.models.Film;
 import br.com.katalog.katalogweb.utils.Constants;
 import br.com.katalog.katalogweb.utils.StringUtils;
@@ -40,7 +39,7 @@ public class FilmArrayAdapter extends ArrayAdapter<Film>
         this.mSearchResult = new ArrayList<>();
         this.mFilter = new MyFilter();
         this.mFilmRef = FirebaseDatabase.getInstance()
-                .getReference(Constants.FILM_DATABASE_ROOT_NODE);
+                .getReference(Constants.FILMS_DBREF);
         mListener = new FilmChildEventListener();
         mFilmRef.addChildEventListener(mListener);
     }

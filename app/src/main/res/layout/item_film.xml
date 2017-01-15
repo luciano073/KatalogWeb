@@ -9,13 +9,6 @@
             name="film"
             type="br.com.katalog.katalogweb.models.Film" />
 
-       <!-- <variable
-            name="director"
-            type="br.com.katalog.katalogweb.models.Artist" />
--->
-        <!--<variable
-            name="writer"
-            type="br.com.katalog.katalogweb.models.Artist" />-->
     </data>
 
     <android.support.v7.widget.CardView
@@ -30,114 +23,127 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/imageView"
-                android:layout_centerVertical="true"
-                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txtTitle"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@{film.normalizedTitle}"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textStyle="bold" />
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/imageView"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@{film.normalizedTitle}"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textStyle="bold" />
 
 
-                <TextView
-                    android:id="@+id/txtOriginalTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="12dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@{@string/format_original_title(film.originalTitle, film.getReleaseYear)}"
-                    android:visibility="@{film.originalTitle == null ? View.GONE : View.VISIBLE}"
-                    android:textAlignment="center"
-                    android:textSize="13sp" />
+                    <TextView
+                        android:id="@+id/txtOriginalTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@{@string/format_original_title(film.originalTitle, film.getReleaseYear)}"
+                        android:visibility="@{film.originalTitle == null ? View.GONE : View.VISIBLE}"
+                        android:textAlignment="center"
+                        android:textSize="13sp" />
 
-                <TextView
-                    android:id="@+id/txtDirector"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_movie_black_16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@{film.director.name}"
-                    android:textAlignment="center"
-                    android:textSize="13sp"
-                    android:layout_marginBottom="6dp"/>
-                <!--android:text="@{@string/format_director(director.name)}"/>-->
+                    <TextView
+                        android:id="@+id/txtDirector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:drawablePadding="@dimen/drawablePadding_item_list"
+                        android:drawableStart="@drawable/ic_movie_creation_18dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@{film.director.name}"
+                        android:textAlignment="center"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="6dp" />
 
-                <TextView
-                    android:id="@+id/txtCast"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:textAlignment="viewStart"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_people_16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@{film.castToListViewShow()}"
-                    android:textSize="13sp"
-                    android:maxLines="1"
-                    android:ellipsize="marquee"
-                    android:layout_marginBottom="6dp"/>
+                    <TextView
+                        android:id="@+id/txtCast"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:textAlignment="viewStart"
+                        android:drawablePadding="@dimen/drawablePadding_item_list"
+                        android:drawableStart="@drawable/ic_people_16dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@{film.castToListViewShow()}"
+                        android:textSize="13sp"
+                        android:maxLines="1"
+                        android:ellipsize="marquee"
+                        android:layout_marginBottom="6dp" />
 
-                <TextView
-                    android:id="@+id/txtLength"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_watch_later_16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@{@string/format_length(film.length)}"
-                    android:visibility="@{film.length == 0 ? View.GONE : View.VISIBLE}"
-                    android:textAlignment="center"
-                    android:textSize="13sp"
-                    android:layout_marginBottom="6dp"/>
+                    <TextView
+                        android:id="@+id/txtLength"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:drawablePadding="@dimen/drawablePadding_item_list"
+                        android:drawableStart="@drawable/ic_watch_later_16dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@{@string/format_length(film.length)}"
+                        android:visibility="@{film.length == 0 ? View.GONE : View.VISIBLE}"
+                        android:textAlignment="center"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="6dp" />
 
-                <TextView
-                    android:id="@+id/txtVideo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/youtube_play"
-                    android:fontFamily="sans-serif-light"
-                    android:autoLink="web"
-                    android:text="@{film.videoReview}"
-                    android:visibility="@{film.videoReview == null ? View.GONE : View.VISIBLE}"
-                    android:textSize="13sp"
-                    android:layout_marginBottom="6dp"/>
+                    <TextView
+                        android:id="@+id/txtVideo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:drawablePadding="@dimen/drawablePadding_item_list"
+                        android:drawableStart="@drawable/youtube_play"
+                        android:fontFamily="sans-serif-light"
+                        android:autoLink="web"
+                        android:text="@{film.videoReview}"
+                        android:visibility="@{film.videoReview == null ? View.GONE : View.VISIBLE}"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="6dp" />
 
-                <TextView
-                    android:id="@+id/txtStars"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/ic_grade_16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@{film.stars}"
-                    android:textSize="13sp"/>
+                    <TextView
+                        android:id="@+id/txtStars"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:drawablePadding="@dimen/drawablePadding_item_list"
+                        android:drawableStart="@drawable/ic_grade_16dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@{film.stars}"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="6dp"/>
 
-                <!--<RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ratingBar"
-                    android:layout_gravity="left"
-                    android:numStars="5"
-                    android:rating="@{film.stars}"
-                    android:isIndicator="true"
-                    style="?android:attr/ratingBarStyleSmall"/>-->
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvWatched"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:drawablePadding="@dimen/drawablePadding_item_list"
+                        android:drawableStart="@drawable/ic_watched_18dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textSize="13sp"
+                        android:text="@{film.watchDateAsString}"
+                        android:visibility="@{film.watchDateAsString == null ? View.GONE : View.VISIBLE}"/>
+
+
+                </LinearLayout>
+                <!--<ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="?android:attr/progressBarStyleInverse"
+                    android:visibility="visible"
+                    android:indeterminate="true"/>-->
+
 
             <ImageView
                 android:id="@+id/imageView"

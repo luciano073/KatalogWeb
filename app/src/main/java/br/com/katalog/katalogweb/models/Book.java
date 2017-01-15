@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import br.com.katalog.katalogweb.utils.StringUtils;
@@ -79,6 +81,44 @@ public class Book implements Parcelable {
         this.colors = other.colors;
     }
 
+    @Exclude
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("title", this.title);
+        result.put("originalTitle", this.originalTitle);
+        result.put("noDiacriticsTitle", this.noDiacriticsTitle);
+        result.put("publisher", this.publisher);
+        result.put("imageUrl", this.imageUrl);
+        result.put("coverType", this.coverType);
+        result.put("reviewUrl", this.reviewUrl);
+        result.put("releaseDate", this.releaseDate);
+        result.put("pages", this.pages);
+
+        return result;
+    }
+
+    @Exclude
+    public Map<String, Object> bookArtistsValue(){
+        Map<String, Object> result = new HashMap<>();
+
+        if (this.writer != null){
+            result.put("/books/" + this.getId() + "/writer/"
+            + this.writer.getId(), this.writer.getName());
+        }
+
+        if (this.drawings != null){
+            result.put("/books/" + this.getId() + "/drawings/"
+                    + this.drawings.getId(), this.drawings.getName());
+        }
+
+        if (this.colors != null){
+            result.put("/books/" + this.getId() + "/colors/"
+                    + this.colors.getId(), this.colors.getName());
+        }
+
+        return result;
+    }
 
     @Exclude
     public String getId() {
@@ -95,9 +135,9 @@ public class Book implements Parcelable {
     }
 
     public void setTitle(String title) {
-        String aux = WordUtils.capitalize(title);
-        this.title = StringUtils.alphabeticTitle(aux);
-        this.noDiacriticsTitle = StringUtils.removeDiacritics(aux);
+//        String aux = WordUtils.capitalize(title);
+        this.title = StringUtils.alphabeticTitle(title);
+        this.noDiacriticsTitle = StringUtils.removeDiacritics(title);
     }
 
     public String getOriginalTitle() {
@@ -105,8 +145,8 @@ public class Book implements Parcelable {
     }
 
     public void setOriginalTitle(String originalTitle) {
-        String aux = WordUtils.capitalize(originalTitle);
-        this.originalTitle = StringUtils.alphabeticTitle(aux);
+//        String aux = WordUtils.capitalize(originalTitle);
+        this.originalTitle = StringUtils.alphabeticTitle(originalTitle);
     }
 
     public String getNoDiacriticsTitle() {
@@ -242,11 +282,13 @@ public class Book implements Parcelable {
 
     @Exclude
     public String getDateAsString() {
-
+        long date = this.releaseDate;
+        String formatDate = null;
         Calendar calendar = Calendar.getInstance();
         DateFormat dateFormat = DateFormat.getDateInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM/yyyy");
-        return simpleDateFormat.format(getReleaseDate());
+        formatDate = simpleDateFormat.format(date);
+        return date != 0 ? formatDate : null;
     }
 
     @Exclude

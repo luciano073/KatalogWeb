@@ -80,7 +80,7 @@ public class BookRegisterActivity extends AppCompatActivity
             mBinding.setBook(book);
             mOldBook = new Book(book);
 
-            if (book.getWriter() != null && book.getWriter().getName() != null) {
+            /*if (book.getWriter() != null && book.getWriter().getName() != null) {
                 mWriter = mOldBook.getWriter();
             }
             if (book.getColors() != null && book.getColors().getName() != null) {
@@ -88,11 +88,11 @@ public class BookRegisterActivity extends AppCompatActivity
             }
             if (book.getDrawings() != null && book.getDrawings().getName() != null) {
                 mDrawings = mOldBook.getDrawings();
-            }
-            if (book.getCoverType() == Book.HARDCOVER){
+            }*/
+            if (book.getCoverType() == Book.HARDCOVER) {
                 mBinding.rbHardcover.setChecked(true);
             }
-            if (book.getCoverType() == Book.PAPERBACK){
+            if (book.getCoverType() == Book.PAPERBACK) {
                 mBinding.rbPaperback.setChecked(true);
             }
         }
@@ -110,7 +110,7 @@ public class BookRegisterActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 DatePickerFragment fragment =
-                        DatePickerFragment.newInstance(mBinding.getBook().getReleaseDate());
+                        DatePickerFragment.newInstance(mBinding.getBook().getReleaseDate(), 1);
                 fragment.show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
@@ -126,6 +126,7 @@ public class BookRegisterActivity extends AppCompatActivity
         mBinding.actWriter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //atribuição necessária devido a lógica do handlerNewArtist()
                 mWriter = (Artist) adapterView.getItemAtPosition(i);
                 mBinding.getBook().setWriter(mWriter);
             }
@@ -174,78 +175,120 @@ public class BookRegisterActivity extends AppCompatActivity
     View.OnFocusChangeListener handlerNewArtist = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View view, boolean hasFocus) {
-            if (!hasFocus) {
-                switch (view.getId()) {
-                    case R.id.actWriter:
+            switch (view.getId()) {
+                case R.id.actWriter:
+                    if (!hasFocus) {
                         Artist writer = mBinding.getBook().getWriter();
                         String writerName = mBinding.actWriter.getText().toString().trim();
                         if (!TextUtils.isEmpty(writerName) && writerName.length() < 4) {
-                            mBinding.actWriter.setError("Name is too short!");
-                            mBinding.actWriter.selectAll();
-                            return;
-                        } else if (writer == null
-                                && !TextUtils.isEmpty(writerName)) {
-                            mWriter = mArtistDAO.createAndInsert(writerName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
-                            mBinding.getBook().setWriter(mWriter);
 
-                        } else if (mWriter != null && !TextUtils.isEmpty(writerName) &&
-                                !mWriter.getName().equals(writerName)) {
-                            mWriter = mArtistDAO.createAndInsert(writerName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
+                            //question solution in stackoverflow.com/questions/
+                            // 3003062/focus-issue-with-multiple-edittexts
+                            mBinding.actWriter.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBinding.actWriter.setError("Name is too short!");
+                                    mBinding.actWriter.selectAll();
+                                    mBinding.actWriter.requestFocus();
+                                }
+                            });
+                        } else if (writer == null && !TextUtils.isEmpty(writerName)) {
                             mBinding.getBook().setWriter(mWriter);
-                        } else if (mWriter != null && TextUtils.isEmpty(writerName)) {
-                            mWriter = null;
-                            mBinding.getBook().setWriter(null);
+                            if (!isNewBook) { //em caso de atualização evita duplicação de artista
+                                mBinding.getBook().setWriter(mOldBook.getWriter());
+                                mWriter = mOldBook.getWriter();
+                            }
+                            if (mWriter == null) {
+                                mWriter = mArtistDAO.createAndInsert(writerName);
+                                mBinding.getBook().setWriter(mWriter);
+                            } else if (mWriter != null && !mWriter.getName().equals(writerName)) {
+                                mWriter = mArtistDAO.createAndInsert(writerName);
+                                mBinding.getBook().setWriter(mWriter);
+                            }
+
                         }
-                        break;
-                    case R.id.actColors:
+                    } else {
+                        //só entra quando recebe o foco.
+                        mBinding.getBook().setWriter(null);//Remember request focus to other field
+                        // when save the book to avoid field set to null.
+                    }
+                    break;
+                case R.id.actDrawings:
+                    if (!hasFocus) {
+                        Artist drawings = mBinding.getBook().getDrawings();
+                        String drawingsName = mBinding.actDrawings.getText().toString().trim();
+                        if (!TextUtils.isEmpty(drawingsName) && drawingsName.length() < 4) {
+
+                            //question solution in stackoverflow.com/questions/
+                            // 3003062/focus-issue-with-multiple-edittexts
+                            mBinding.actDrawings.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBinding.actDrawings.setError("Name is too short!");
+                                    mBinding.actDrawings.selectAll();
+                                    mBinding.actDrawings.requestFocus();
+                                }
+                            });
+                        } else if (drawings == null && !TextUtils.isEmpty(drawingsName)) {
+                            mBinding.getBook().setWriter(mDrawings);
+                            if (!isNewBook) { //em caso de atualização evita duplicação de artista
+                                mBinding.getBook().setWriter(mOldBook.getDrawings());
+                                mDrawings = mOldBook.getDrawings();
+                            }
+                            if (mDrawings == null) {
+                                mDrawings = mArtistDAO.createAndInsert(drawingsName);
+                                mBinding.getBook().setWriter(mDrawings);
+                            } else if (mDrawings != null && !mDrawings.getName().equals(drawingsName)) {
+                                mDrawings = mArtistDAO.createAndInsert(drawingsName);
+                                mBinding.getBook().setWriter(mDrawings);
+                            }
+
+                        }
+                    } else {
+                        //só entra quando recebe o foco.
+                        mBinding.getBook().setDrawings(null);//Remember request focus to other field
+                        // when save the book to avoid field set to null.
+                    }
+                    break;
+                case R.id.actColors:
+                    if (!hasFocus) {
+                        Artist colors = mBinding.getBook().getColors();
                         String colorsName = mBinding.actColors.getText().toString().trim();
                         if (!TextUtils.isEmpty(colorsName) && colorsName.length() < 4) {
-                            mBinding.actColors.setError("Name is too short!");
-                            mBinding.actColors.selectAll();
-                            return;
-                        } else if (mColors == null
-                                && !TextUtils.isEmpty(colorsName)) {
-                            mColors = mArtistDAO.createAndInsert(colorsName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
-                            mBinding.getBook().setColors(mColors);
 
-                        } else if (mColors != null && !TextUtils.isEmpty(colorsName) &&
-                                !colorsName.equals(mColors.getName())) {
-                            mColors = mArtistDAO.createAndInsert(colorsName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
-                            mBinding.getBook().setColors(mColors);
-                        } else if (mColors != null && TextUtils.isEmpty(colorsName)) {
-                            mColors = null;
-                            mBinding.getBook().setColors(null);
+                            //question solution in stackoverflow.com/questions/
+                            // 3003062/focus-issue-with-multiple-edittexts
+                            mBinding.actColors.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBinding.actColors.setError("Name is too short!");
+                                    mBinding.actColors.selectAll();
+                                    mBinding.actColors.requestFocus();
+                                }
+                            });
+                        } else if (colors == null && !TextUtils.isEmpty(colorsName)) {
+                            mBinding.getBook().setWriter(mColors);
+                            if (!isNewBook) { //em caso de atualização evita duplicação de artista
+                                mBinding.getBook().setWriter(mOldBook.getColors());
+                                mColors = mOldBook.getColors();
+                            }
+                            if (mColors == null) {
+                                mColors = mArtistDAO.createAndInsert(colorsName);
+                                mBinding.getBook().setWriter(mColors);
+                            } else if (mColors != null && !mColors.getName().equals(colorsName)) {
+                                mColors = mArtistDAO.createAndInsert(colorsName);
+                                mBinding.getBook().setWriter(mColors);
+                            }
+
                         }
-                        break;
-
-                    case R.id.actDrawings:
-                        String drawingName = mBinding.actDrawings.getText().toString().trim();
-                        if (!TextUtils.isEmpty(drawingName) && drawingName.length() < 4) {
-                            mBinding.actDrawings.setError("Name is too short!");
-                            mBinding.actDrawings.selectAll();
-                            return;
-                        } else if (mDrawings == null
-                                && !TextUtils.isEmpty(drawingName)) {
-                            mDrawings = mArtistDAO.createAndInsert(drawingName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
-                            mBinding.getBook().setDrawings(mDrawings);
-
-                        } else if (mDrawings != null && !TextUtils.isEmpty(drawingName) &&
-                                !mDrawings.getName().equals(drawingName)) {
-                            mDrawings = mArtistDAO.createAndInsert(drawingName);
-                            mArtistArrayAdapter.notifyDataSetChanged();
-                            mBinding.getBook().setDrawings(mDrawings);
-                        } else if (mDrawings != null && TextUtils.isEmpty(drawingName)) {
-                            mDrawings = null;
-                            mBinding.getBook().setDrawings(null);
-                        }
-                        break;
-                }
+                    } else {
+                        //só entra quando recebe o foco.
+                        mBinding.getBook().setColors(null);//Remember request focus to other field
+                        // when save the book to avoid field set to null.
+                    }
+                    break;
             }
+
         }
     };
 
@@ -306,7 +349,7 @@ public class BookRegisterActivity extends AppCompatActivity
 
     public void clickSave(View view) {
 
-        if (TextUtils.isEmpty(mBinding.edtTitle.getText().toString().trim())){
+        if (TextUtils.isEmpty(mBinding.edtTitle.getText().toString().trim())) {
             mBinding.edtTitle.setError(getString(R.string.cant_be_empty));
             mBinding.edtTitle.requestFocus();
             return;
@@ -315,7 +358,7 @@ public class BookRegisterActivity extends AppCompatActivity
         mProgressDialog.setMessage(getString(R.string.save_book));
         mProgressDialog.show();
 
-        if (mImageToUpload.length > 0){
+        if (mImageToUpload.length > 0) {
             StorageReference filePath =
                     mStorage.child("images")
                             .child(DateFormat.format("yyyy-MM-dd_hhmmss", new Date()).toString());
@@ -338,21 +381,25 @@ public class BookRegisterActivity extends AppCompatActivity
     }
 
     private void saveBook() {
+        mBinding.edtTitle.requestFocus();// force called to handlerNewArtist
         Book book = mBinding.getBook();
         BookDAO bookDAO = BookDAO.getInstance();
-//        book.setWriter(mWriter);
-//        book.setDrawings(mDrawings);
-//        book.setColors(mColors);
-        if (mBinding.rbHardcover.isChecked()){
+        if (TextUtils.isEmpty(mBinding.actDrawings.getText().toString().trim()))
+            mBinding.getBook().setDrawings(null);
+        if (TextUtils.isEmpty(mBinding.actColors.getText().toString().trim()))
+            mBinding.getBook().setColors(null);
+        if (TextUtils.isEmpty(mBinding.actWriter.getText().toString().trim()))
+            mBinding.getBook().setWriter(null);
+        if (mBinding.rbHardcover.isChecked()) {
             book.setCoverType(Book.HARDCOVER);
         }
-        if (mBinding.rbPaperback.isChecked()){
+        if (mBinding.rbPaperback.isChecked()) {
             book.setCoverType(Book.PAPERBACK);
         }
 
-        if (isNewBook){
+        if (isNewBook) {
             book.setId(bookDAO.insert(book));
-        }else {
+        } else {
             bookDAO.update(book, mOldBook);
         }
 
@@ -362,7 +409,7 @@ public class BookRegisterActivity extends AppCompatActivity
 
 
     @Override
-    public void onDateListener(int year, int month, int dayOfYear) {
+    public void onDateListener(int view, int year, int month, int dayOfYear) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dayOfYear);
         Date date = calendar.getTime();
@@ -376,10 +423,10 @@ public class BookRegisterActivity extends AppCompatActivity
 //        Log.d(TAG, "locale: " + locale.getDisplayCountry());
         java.text.DateFormat dateFormat =
                 java.text.DateFormat.getDateInstance();
-        if (locale.getDisplayCountry().matches("(?i).*bra[sz]il.*")){
+        if (locale.getDisplayCountry().matches("(?i).*bra[sz]il.*")) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MMM/yyyy");
             mBinding.edtRelease.setText(simpleDateFormat.format(date));
-        }else {
+        } else {
 
             mBinding.edtRelease.setText(dateFormat.format(date));
         }

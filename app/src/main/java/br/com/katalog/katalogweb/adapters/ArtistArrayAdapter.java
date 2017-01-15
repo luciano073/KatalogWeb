@@ -98,11 +98,27 @@ public class ArtistArrayAdapter extends ArrayAdapter<Artist>
         }
     }
 
+    private int getIndexForKey(String key){
+        int index = 0;
+        for (Artist artist : mOriginalList){
+            if (artist.getId().equals(key)){
+                return index;
+            }else {
+                index++;
+            }
+        }
+        throw new IllegalArgumentException("key not found");
+    }
+
     class ArtistChildEventListener implements ChildEventListener {
 
 
         @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildKey) {
+            /*int index = 0;
+            if (previousChildKey != null){
+                index = getIndexForKey(previousChildKey) + 1;
+            }*/
             Artist artist = dataSnapshot.getValue(Artist.class);
             artist.setId(dataSnapshot.getKey());
             mOriginalList.add(artist);

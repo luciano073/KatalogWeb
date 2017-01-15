@@ -30,18 +30,13 @@ import java.util.List;
 
 import br.com.katalog.katalogweb.R;
 import br.com.katalog.katalogweb.activities.BookRegisterActivity;
-import br.com.katalog.katalogweb.activities.FilmRegisterActivity;
 import br.com.katalog.katalogweb.adapters.BookAdapter;
 import br.com.katalog.katalogweb.adapters.BookSearchAdapter;
-import br.com.katalog.katalogweb.adapters.FilmSearchAdapter;
 import br.com.katalog.katalogweb.databinding.FragmentBookListBinding;
 import br.com.katalog.katalogweb.listeners.BookClickListener;
-import br.com.katalog.katalogweb.listeners.FilmClickListener;
 import br.com.katalog.katalogweb.models.Book;
 import br.com.katalog.katalogweb.models.BookDAO;
-import br.com.katalog.katalogweb.models.Film;
 import br.com.katalog.katalogweb.utils.Constants;
-import br.com.katalog.katalogweb.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,7 +61,7 @@ public class BookListFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBookRef = FirebaseDatabase.getInstance().getReference(Constants.BOOK_DATABASE_ROOT_NODE);
+        mBookRef = FirebaseDatabase.getInstance().getReference(Constants.BOOKS_DBREF);
         mBookRef.keepSynced(true);
         mAdapter = new BookAdapter(getContext(), mBookRef, new BookClickListener() {
             @Override

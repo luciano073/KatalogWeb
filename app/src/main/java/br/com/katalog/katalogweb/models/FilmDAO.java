@@ -11,14 +11,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import br.com.katalog.katalogweb.listeners.FilmEventBus;
 import br.com.katalog.katalogweb.utils.Constants;
-
 
 
 /**
@@ -26,32 +24,31 @@ import br.com.katalog.katalogweb.utils.Constants;
  */
 
 public class FilmDAO implements
-        DAO<Film>,
-        ValueEventListener {
+        DAO<Film> {
     private static final String TAG = "DAO";
     private DatabaseReference filmDatabase;
+    private DatabaseReference mDatabaseRef;
     private DatabaseReference artistDatabase;
     private StorageReference imageDatabase;
     private ArrayList<DataSnapshot> snapshots;
     private ArrayList<Film> films;
+    private Film mFilm;
     private static FilmDAO instance = new FilmDAO();
 
 
     private FilmDAO() {
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         filmDatabase = FirebaseDatabase.getInstance()
-                .getReference(Constants.FILM_DATABASE_ROOT_NODE);
+                .getReference(Constants.FILMS_DBREF);
         filmDatabase.keepSynced(true);
         artistDatabase = FirebaseDatabase.getInstance()
                 .getReference(Artist.DatabaseFields.ROOT_DATABASE);
         artistDatabase.keepSynced(true);
         imageDatabase = FirebaseStorage.getInstance()
                 .getReference();
-        snapshots = new ArrayList<DataSnapshot>();
-        films = new ArrayList<Film>();
-//        EventBus.getDefault().register(this);
-        filmDatabase.addValueEventListener(this);
 
     }
+
 
     public static FilmDAO getInstance() {
         return instance;
@@ -60,50 +57,104 @@ public class FilmDAO implements
 
     public void update(Film film, Film oldFilm) {
 
+        String filmKey = film.getId();
         String oldImageUrl = oldFilm.getImageUrl();
         Artist oldDirector = oldFilm.getDirector();
         Artist oldWriter = oldFilm.getWriter();
         List<Artist> oldCast = oldFilm.getCast();
+        Map<String, Object> childUpdates = new HashMap<>();
 
         if (oldImageUrl != null && !film.getImageUrl().equals(oldImageUrl)) {
             deleteImage(oldImageUrl);
         }
 
+        //Check for changes on artists relationship
         for (Artist artist : oldCast) {
-            /*if (film.getCast() == null || film.getCast().size() == 0){
-                artistDatabase.child(artist.getId())
-                        .child(Artist.DatabaseFields.ACTED)
-                        .child(film.getId())
-                        .removeValue();
-            } else*/
-            if (!film.getCast().contains(artist)) {
-                artistDatabase.child(artist.getId())
-                        .child(Artist.DatabaseFields.ACTED)
-                        .child(film.getId())
-                        .removeValue();
+            if (film.getCast() == null || film.getCast().size() == 0) {
 
-                filmDatabase.child(film.getId())
-                        .child(Film.DatabaseFields.CAST)
-                        .child(artist.getId())
-                        .removeValue();
+                childUpdates.put(Constants.ARTIST_WORKS_DBREF_WITH_SLASH
+                        + artist.getId() + "/films/" + filmKey, null);
+
+            } else if (!film.getCast().contains(artist)) {
+                childUpdates.put(Constants.ARTIST_WORKS_DBREF_WITH_SLASH
+                        + artist.getId() + "/films/"  + filmKey, null);
+
             }
         }
 
         if (oldDirector.getId() != null && !oldDirector.equals(film.getDirector())) {
-            artistDatabase.child(oldDirector.getId())
-                    .child(Artist.DatabaseFields.DIRECTED)
-                    .child(film.getId())
-                    .removeValue();
+
+            childUpdates.put(Constants.ARTIST_WORKS_DBREF_WITH_SLASH
+                    + oldDirector.getId() + "/films/"  + filmKey, null);
         }
 
         if (oldWriter.getId() != null && !oldWriter.equals(film.getWriter())) {
-            artistDatabase.child(oldWriter.getId())
-                    .child(Artist.DatabaseFields.WROTE)
-                    .child(film.getId())
-                    .removeValue();
+
+            childUpdates.put(Constants.ARTIST_WORKS_DBREF_WITH_SLASH
+                    + oldWriter.getId() + "/films/"  + filmKey, null);
+        }
+        mDatabaseRef.updateChildren(childUpdates);
+        executeAtomicUpdates(film);
+
+
+    }
+
+    @Override
+    public String insert(final Film film) {
+        String filmKey = mDatabaseRef.child("Films").push().getKey();//filmDatabase.push().getKey();
+        film.setId(filmKey);
+        executeAtomicUpdates(film);
+        return filmKey;
+    }
+
+    private void executeAtomicUpdates(final Film film) {
+        String filmKey = film.getId();
+        Artist director = film.getDirector();
+        Artist writer = film.getWriter();
+        List<Artist> cast = film.getCast();
+
+        Map<String, Object> filmValues = film.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/Films/" + filmKey, filmValues);
+
+        if (director != null && director.getName() != null) {
+            childUpdates.put(Constants.ARTIST_WORKS_DBREF_WITH_SLASH
+                    + director.getId() + "/films/" + filmKey, true);
+            childUpdates.put("/film-contributors/" + filmKey
+                    + "/directors/" + director.getId(), director.toMap());
+
+        }
+        if (writer != null && writer.getName() != null) {
+            childUpdates.put(Constants.ARTIST_WORKS_DBREF_WITH_SLASH
+                    + writer.getId() + "/films/"  + filmKey, true);
+            childUpdates.put("/film-contributors/" + filmKey
+                    + "/writers/" + writer.getId(), writer.toMap());
         }
 
-        save(film);
+        Map<String, Object> castValues = new HashMap<>();
+        if (cast != null && cast.size() > 0) {
+            for (Artist artist : cast) {
+                castValues.put(artist.getId(), artist.toMap());
+                childUpdates.put(Constants.ARTIST_WORKS_DBREF_WITH_SLASH
+                        + artist.getId() + "/films/"  + filmKey, true);
+
+            }
+            //atualiza todo o diretorio "cast" evita checagem nas atualizações
+            childUpdates.put("/film-contributors/" + filmKey
+                    + "/cast/", castValues);
+        }else {
+            childUpdates.put("/film-contributors/" + filmKey
+                    + "/cast/", null);
+        }
+
+
+
+        mDatabaseRef.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                connectArtists(film);
+            }
+        });
 
     }
 
@@ -112,6 +163,102 @@ public class FilmDAO implements
         Uri uri = Uri.parse(imgUrl);
         String imgNode = uri.getLastPathSegment();
         imageDatabase.child(imgNode).delete();
+    }
+
+
+    @Override
+    public void delete(Film film) {
+        if (film.getImageUrl() != null) {
+            deleteImage(film.getImageUrl());
+        }
+        desconnectArtists(film);
+
+        filmDatabase.child(film.getId()).removeValue();
+
+    }
+
+
+    private void connectArtists(Film film) {
+        Artist director = film.getDirector();
+        Artist writer = film.getWriter();
+        List<Artist> cast = film.getCast();
+//        Log.d(TAG, "director: " + director.getName());
+        Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> castValues = new HashMap<>();
+
+
+
+        if (director != null && director.getName() != null) {
+
+            filmDatabase.child(film.getId())
+                    .child(Film.DatabaseFields.DIRECTOR)
+                    .child(director.getId())
+                    .setValue(director.getName());
+        }
+
+        if (writer != null && writer.getName() != null) {
+
+            filmDatabase.child(film.getId())
+                    .child(Film.DatabaseFields.WRITER)
+                    .child(writer.getId())
+                    .setValue(writer.getName());
+        }
+
+        if (cast != null && cast.size() > 0) {
+            for (Artist artist : cast) {
+
+                /*filmDatabase.child(film.getId())
+                        .child(Film.DatabaseFields.CAST)
+                        .child(artist.getId())
+                        .setValue(artist.getName());*/
+                castValues.put(artist.getId(), artist.getName());
+            }
+        }
+        childUpdates.put("/Films/" + film.getId() + "/Cast/", castValues);
+        mDatabaseRef.updateChildren(childUpdates);
+    }
+
+    private void desconnectArtists(final Film film) {
+
+        filmDatabase.child(film.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChild(Film.DatabaseFields.DIRECTOR)) {
+                    String directorKey = "";
+                    DataSnapshot directorSnapshot = dataSnapshot.child(Film.DatabaseFields.DIRECTOR);
+                    for (DataSnapshot snapshot : directorSnapshot.getChildren()) {
+                        directorKey = snapshot.getKey();
+                    }
+
+                }
+
+                if (dataSnapshot.hasChild(Film.DatabaseFields.WRITER)) {
+                    String writerKey = "";
+                    DataSnapshot writerSnapshot = dataSnapshot.child(Film.DatabaseFields.WRITER);
+                    for (DataSnapshot snapshot : writerSnapshot.getChildren()) {
+                        writerKey = snapshot.getKey();
+                    }
+
+                }
+
+                if (dataSnapshot.hasChild(Film.DatabaseFields.CAST)) {
+                    ArrayList<String> artistsKey = new ArrayList<String>();
+                    DataSnapshot castSnapshot = dataSnapshot.child(Film.DatabaseFields.CAST);
+                    for (DataSnapshot snapshot : castSnapshot.getChildren()) {
+                        artistsKey.add(snapshot.getKey());
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void save(final Film film) {
@@ -132,188 +279,15 @@ public class FilmDAO implements
     }
 
 
-    @Override
-    public void delete(Film film) {
-        if (film.getImageUrl() != null) {
-            deleteImage(film.getImageUrl());
-        }
-        desconnectArtists(film);
-
-        filmDatabase.child(film.getId()).removeValue();
-
-    }
-
-
-    public void unregisterBus() {
-//        EventBus.getDefault().unregister(this);
-    }
-
-    public void unregisterFirebaseListener() {
-        filmDatabase.removeEventListener(this);
-    }
-
-    @Override
-    public List<Film> getAll() {
-        //Learn how to work with asynchronous firebase listener
-        final ArrayList<Film> list = new ArrayList<>();
-        /*filmDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Film film = snapshot.getValue(Film.class);
-                    film.setId(snapshot.getKey());
-                    list.add(film);
-                }
-                EventBus.getDefault().post(list);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-        return list;
-    }
-
-    @Override
-    public String insert(Film film) {
-        String filmKey = filmDatabase.push().getKey();
-        film.setId(filmKey);
-        save(film);
-
-        return filmKey;
-    }
-
-    private void connectArtists(Film film) {
-        Artist director = film.getDirector();
-        Artist writer = film.getWriter();
-        List<Artist> cast = film.getCast();
-//        Log.d(TAG, "director: " + director.getName());
-
-        if (director != null && director.getName() != null) {
-            artistDatabase.child(director.getId())
-                    .child(Artist.DatabaseFields.DIRECTED)
-                    .child(film.getId())
-                    .setValue(film.getTitle());
-            filmDatabase.child(film.getId())
-                    .child(Film.DatabaseFields.DIRECTOR)
-                    .child(director.getId())
-                    .setValue(director.getName());
-        }
-
-        if (writer != null && writer.getName() != null) {
-            artistDatabase.child(writer.getId())
-                    .child(Artist.DatabaseFields.WROTE)
-                    .child(film.getId())
-                    .setValue(film.getTitle());
-            filmDatabase.child(film.getId())
-                    .child(Film.DatabaseFields.WRITER)
-                    .child(writer.getId())
-                    .setValue(writer.getName());
-        }
-
-        if (cast != null && cast.size() > 0) {
-            for (Artist artist : cast) {
-                artistDatabase.child(artist.getId())
-                        .child(Artist.DatabaseFields.ACTED)
-                        .child(film.getId())
-                        .setValue(film.getTitle());
-                filmDatabase.child(film.getId())
-                        .child(Film.DatabaseFields.CAST)
-                        .child(artist.getId())
-                        .setValue(artist.getName());
-            }
-        }
-    }
-
-    private void desconnectArtists(final Film film) {
-
-        filmDatabase.child(film.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot.hasChild(Film.DatabaseFields.DIRECTOR)) {
-                    String directorKey = "";
-                    DataSnapshot directorSnapshot = dataSnapshot.child(Film.DatabaseFields.DIRECTOR);
-                    for (DataSnapshot snapshot : directorSnapshot.getChildren()) {
-                        directorKey = snapshot.getKey();
-                    }
-                    artistDatabase.child(directorKey)
-                            .child(Artist.DatabaseFields.DIRECTED)
-                            .child(film.getId())
-                            .removeValue();
-                }
-
-                if (dataSnapshot.hasChild(Film.DatabaseFields.WRITER)) {
-                    String writerKey = "";
-                    DataSnapshot writerSnapshot = dataSnapshot.child(Film.DatabaseFields.WRITER);
-                    for (DataSnapshot snapshot : writerSnapshot.getChildren()) {
-                        writerKey = snapshot.getKey();
-                    }
-                    artistDatabase.child(writerKey)
-                            .child(Artist.DatabaseFields.WROTE)
-                            .child(film.getId())
-                            .removeValue();
-                }
-
-                if (dataSnapshot.hasChild(Film.DatabaseFields.CAST)) {
-                    ArrayList<String> artistsKey = new ArrayList<String>();
-                    DataSnapshot castSnapshot = dataSnapshot.child(Film.DatabaseFields.CAST);
-                    for (DataSnapshot snapshot : castSnapshot.getChildren()) {
-                        artistsKey.add(snapshot.getKey());
-                    }
-
-                    for (String key : artistsKey) {
-                        artistDatabase.child(key)
-                                .child(Artist.DatabaseFields.ACTED)
-                                .child(film.getId())
-                                .removeValue();
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-//        ArrayList<Film> films = new ArrayList<>();
-        FilmEventBus eventBus = new FilmEventBus();
-        eventBus.setTotalFilms(dataSnapshot.getChildrenCount());
-        EventBus.getDefault().postSticky(eventBus);
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            snapshots.add(snapshot);
-            Film film = snapshot.getValue(Film.class);
-            film.setId(snapshot.getKey());
-            films.add(film);
-//            EventBus.getDefault().post(film);
-        }
-//        EventBus.getDefault().post(films);
-
-    }
-
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-
-    }
-
 
     public void cleanUp() {
-        filmDatabase.removeEventListener(this);
 //        EventBus.getDefault().unregister(this);
     }
 
     public Artist retrieveDirector(DataSnapshot dataSnapshot) {
         Artist director = new Artist();
 
-        DataSnapshot directorSnapshot = dataSnapshot.child(Constants.FILM_DATABASE_CHILD_DIRECTOR);
+        DataSnapshot directorSnapshot = dataSnapshot.child(Constants.FILM_DIRECTOR_CHILD_DBREF);
         for (DataSnapshot snapshotD : directorSnapshot.getChildren()) {
             director.setId(snapshotD.getKey());
             director.setName(snapshotD.getValue(String.class));
@@ -325,7 +299,7 @@ public class FilmDAO implements
     public Artist retrieveWriter(DataSnapshot dataSnapshot) {
         Artist writer = new Artist();
 
-        DataSnapshot writerSnapshot = dataSnapshot.child(Constants.FILM_DATABASE_CHILD_WRITER);
+        DataSnapshot writerSnapshot = dataSnapshot.child(Constants.FILM_WRITER_CHILD_DBREF);
         for (DataSnapshot snapshotD : writerSnapshot.getChildren()) {
             writer.setId(snapshotD.getKey());
             writer.setName(snapshotD.getValue(String.class));
@@ -336,7 +310,7 @@ public class FilmDAO implements
     public ArrayList<Artist> retrieveCast(DataSnapshot dataSnapshot) {
         ArrayList<Artist> cast = new ArrayList<>();
 
-        DataSnapshot castSnapshot = dataSnapshot.child(Constants.FILM_DATABASE_CHILD_CAST);
+        DataSnapshot castSnapshot = dataSnapshot.child(Constants.FILM_CAST_CHILD_DBREF);
         for (DataSnapshot snapshotC : castSnapshot.getChildren()) {
             Artist artist = new Artist();
             artist.setId(snapshotC.getKey());
@@ -345,6 +319,62 @@ public class FilmDAO implements
         }
 
         return cast;
+    }
+
+
+    public void unregisterBus() {
+//        EventBus.getDefault().unregister(this);
+    }
+
+
+    @Override
+    public List<Film> getAll() {
+
+        return null;
+    }
+
+    public void setupFilmArtists(final Film film) {
+        mDatabaseRef.child(Constants.FILM_CONTRIBUTORS_DBREF)
+                .child(film.getId())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("directors")) {
+                            DataSnapshot snapD = dataSnapshot.child("directors");
+                            for (DataSnapshot snapshot : snapD.getChildren()) {
+                                Artist director = snapshot.getValue(Artist.class);
+                                director.setId(snapshot.getKey());
+                                film.setDirector(director);
+                            }
+                        }
+
+                        if (dataSnapshot.hasChild("writers")) {
+                            DataSnapshot snapW = dataSnapshot.child("writers");
+                            for (DataSnapshot snapshot : snapW.getChildren()) {
+                                Artist writer = snapshot.getValue(Artist.class);
+                                writer.setId(snapshot.getKey());
+                                film.setWriter(writer);
+                            }
+                        }
+
+                        if (dataSnapshot.hasChild("cast")) {
+                            List<Artist> cast = new ArrayList<Artist>();
+                            DataSnapshot snapC = dataSnapshot.child("cast");
+                            for (DataSnapshot snapshot : snapC.getChildren()) {
+                                Artist artist = snapshot.getValue(Artist.class);
+                                artist.setId(snapshot.getKey());
+                                cast.add(artist);
+                            }
+                            film.setCast(cast);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
 

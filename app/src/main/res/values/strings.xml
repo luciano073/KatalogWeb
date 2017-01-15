@@ -13,11 +13,13 @@
     <string name="script">Roteiro</string>
     <string name="length">Duração(min)</string>
     <string name="release_date">Lançamento</string>
+    <string name="watch_date">Assistido em</string>
     <string name="video_link">Video review</string>
     <string name="cast">Elenco</string>
     <string name="format_original_title">\" %1$s (%2$d) \"</string>
     <string name="format_length">%1$d min.</string>
     <string name="format_pages">%1$d páginas</string>
+    <string name="artist_works">Trabalhos relacionados: [ %1$d ]</string>
     <string name="save_film">Salvando filme...</string>
     <string name="image_removed">Imagem removida: %1$d - Filme: %2$d</string>
     <string name="add_cast">Adicionar Elenco</string>
@@ -69,6 +71,10 @@
     <string name="new_media">Nova midia digital</string>
     <string name="search_content">Buscar conteúdo...</string>
     <string name="search_media">Procurar midia...</string>
+    <string name="search_hint">Procurar em todo app...</string>
+    <string name="no_search_result">Busca não retornou nenhum conteúdo.</string>
+    <string name="close">Fechar</string>
+    <string name="book_comics">Livro / Gibi</string>
 
     <string-array name="publishers">
         <item>Panini</item>

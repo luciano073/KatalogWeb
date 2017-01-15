@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,11 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,12 +34,9 @@ import br.com.katalog.katalogweb.adapters.FilmAdapter;
 import br.com.katalog.katalogweb.adapters.FilmSearchAdapter;
 import br.com.katalog.katalogweb.databinding.FragmentFilmListBinding;
 import br.com.katalog.katalogweb.listeners.FilmClickListener;
-import br.com.katalog.katalogweb.listeners.FilmEventBus;
-import br.com.katalog.katalogweb.models.Book;
 import br.com.katalog.katalogweb.models.Film;
 import br.com.katalog.katalogweb.models.FilmDAO;
 import br.com.katalog.katalogweb.utils.Constants;
-import br.com.katalog.katalogweb.utils.StringUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,6 +46,7 @@ public class FilmListFragment extends Fragment implements
 
     public static final String TAG = FilmListFragment.class.getName();
     private FragmentFilmListBinding mBinding;
+    private DatabaseReference mDatabaseRef;
     private DatabaseReference mFilmsRef;
     private FilmAdapter mAdapter;
     private List<Film> mFilmList;
@@ -66,8 +59,9 @@ public class FilmListFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFilmsRef = FirebaseDatabase.getInstance().getReference(Constants.FILM_DATABASE_ROOT_NODE);
+        mFilmsRef = FirebaseDatabase.getInstance().getReference(Constants.FILMS_DBREF);
         mFilmsRef.keepSynced(true);
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         mAdapter = new FilmAdapter(getContext(), mFilmsRef, new FilmClickListener() {
             @Override
             public void onFilmClicked(Film film) {
@@ -125,12 +119,13 @@ public class FilmListFragment extends Fragment implements
                 }
                 mFilmList.clear(); //To avoid duplicated objects in the list
                 for (DataSnapshot filmSnapshot : dataSnapshot.getChildren()) {
-                    Film film = filmSnapshot.getValue(Film.class);
+                    final Film film = filmSnapshot.getValue(Film.class);
                     film.setId(filmSnapshot.getKey());
                     FilmDAO filmDAO = FilmDAO.getInstance();
                     film.setDirector(filmDAO.retrieveDirector(filmSnapshot));
                     film.setWriter(filmDAO.retrieveWriter(filmSnapshot));
                     film.setCast(filmDAO.retrieveCast(filmSnapshot));
+
                     mFilmList.add(film);
 //                    Log.i(TAG, "film: " + film.getTitle());
                 }
@@ -191,11 +186,11 @@ public class FilmListFragment extends Fragment implements
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (!TextUtils.isEmpty(newText)){
+        if (!TextUtils.isEmpty(newText)) {
 
             mFilmListResult.clear();
-            for (Film f : mFilmList){
-                if (f.getNoDiacriticsTitle().toLowerCase().contains(newText)){
+            for (Film f : mFilmList) {
+                if (f.getNoDiacriticsTitle().toLowerCase().contains(newText)) {
                     mFilmListResult.add(f);
                 }
             }
@@ -215,7 +210,7 @@ public class FilmListFragment extends Fragment implements
             );
             mBinding.recyclerView.swapAdapter(adapter, false);
 
-        }else {
+        } else {
             mBinding.recyclerView.swapAdapter(mAdapter, false);
         }
 //        mBinding.recyclerView.swapAdapter(mAdapter, false);

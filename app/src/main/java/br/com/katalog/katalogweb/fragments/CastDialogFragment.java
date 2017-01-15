@@ -97,7 +97,7 @@ public class CastDialogFragment extends DialogFragment {
 
     @Override
     public void onDestroy() {
-        ArtistDAO.getInstance().unregisterFirebaseEventListener();
+//        ArtistDAO.getInstance().unregisterFirebaseEventListener();
         super.onDestroy();
 //        getDialog().getWindow().setLayout(500, 300);
     }

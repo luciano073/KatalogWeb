@@ -87,7 +87,8 @@
                     android:text="@{book.dateAsString}"
                     android:textAlignment="center"
                     android:textSize="13sp"
-                    android:layout_marginBottom="6dp"/>
+                    android:layout_marginBottom="6dp"
+                    android:visibility="@{book.dateAsString == null ? View.GONE : View.VISIBLE}"/>
 
                 <TextView
                     android:id="@+id/tvPublisher"
@@ -95,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:drawablePadding="6dp"
-                    android:drawableStart="@drawable/ic_print_16dp"
+                    android:drawableStart="@drawable/ic_copyright_gray_18dp"
                     android:fontFamily="sans-serif-light"
                     android:text="@{book.publishersAsList}"
                     android:textAlignment="center"

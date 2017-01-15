@@ -7,9 +7,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import br.com.katalog.katalogweb.utils.Constants;
 
-import static br.com.katalog.katalogweb.R.string.colors;
-import static br.com.katalog.katalogweb.R.string.drawings;
-
 /**
  * Created by luciano on 17/12/2016.
  */
@@ -21,7 +18,7 @@ public class DigitalMediaDAO {
 
     private DigitalMediaDAO(){
         mMediaRef = FirebaseDatabase.getInstance()
-                .getReference(Constants.DIGITAL_MEDIA_DATABASE_ROOT_NODE);
+                .getReference(Constants.DIGITAL_MEDIA_DBREF);
     }
 
     public static DigitalMediaDAO getInstance(){

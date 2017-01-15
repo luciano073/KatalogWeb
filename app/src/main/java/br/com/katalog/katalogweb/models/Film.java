@@ -4,15 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +43,12 @@ public class Film implements Parcelable {
     private String genres;
     private String videoReview;
     private String imageUrl;
-
+    private long watchDate;
+    @Exclude
     private Artist director;
+    @Exclude
     private Artist writer;
+    @Exclude
     private List<Artist> cast;
 
 
@@ -55,22 +57,24 @@ public class Film implements Parcelable {
     }
 
     //duplicate an object
-    public Film(Film other){
-        this.title          = other.title;
-        this.originalTitle  = other.originalTitle;
-        this.id             = other.id;
-        this.length         = other.length;
-        this.releaseDate    = other.releaseDate;
-        this.imageUrl       = other.imageUrl;
-        this.videoReview    = other.videoReview;
-        this.stars          = other.stars;
-        this.director       = other.director;
-        this.writer         = other.writer;
-        this.cast           = new ArrayList<Artist>(other.cast);
+    public Film(Film other) {
+        this.title = other.title;
+        this.originalTitle = other.originalTitle;
+        this.id = other.id;
+        this.length = other.length;
+        this.releaseDate = other.releaseDate;
+        this.imageUrl = other.imageUrl;
+        this.videoReview = other.videoReview;
+        this.stars = other.stars;
+        this.watchDate = other.watchDate;
+        this.director = other.director;
+        this.writer = other.writer;
+        this.cast = new ArrayList<Artist>(other.cast);
     }
 
     public Film(String title, String originalTitle) {
         this.title = title;
+        this.noDiacriticsTitle = StringUtils.removeDiacritics(title);
         this.originalTitle = originalTitle;
 
     }
@@ -90,6 +94,7 @@ public class Film implements Parcelable {
         genres = in.readString();
         videoReview = in.readString();
         imageUrl = in.readString();
+        watchDate = in.readLong();
         director = in.readParcelable(Artist.class.getClassLoader());
         writer = in.readParcelable(Artist.class.getClassLoader());
         cast = in.createTypedArrayList(Artist.CREATOR);
@@ -110,6 +115,7 @@ public class Film implements Parcelable {
         parcel.writeString(genres);
         parcel.writeString(videoReview);
         parcel.writeString(imageUrl);
+        parcel.writeLong(watchDate);
         parcel.writeParcelable(director, i);
         parcel.writeParcelable(writer, i);
         parcel.writeTypedList(cast);
@@ -148,10 +154,23 @@ public class Film implements Parcelable {
         result.put("originalTitle", this.originalTitle);
         result.put("noDiacriticsTitle", this.noDiacriticsTitle);
         result.put("releaseDate", this.releaseDate);
+        result.put("watchDate", this.watchDate);
         result.put("length", this.length);
         result.put("stars", this.stars);
+        result.put("imageUrl", this.imageUrl);
+        result.put("videoReview", this.videoReview);
         result.put("companyProduction", this.companyProduction);
 
+        /*if (this.director != null && this.director.getName() != null)
+            result.put(this.director.getId(), this.director.getName());
+        if (this.writer != null && this.writer.getId() != null) {
+            result.put(this.writer.getId(), this.writer.getName());
+        }
+        if (this.cast.size() > 0){
+            for (Artist artist : cast){
+                result.put(artist.getId(), artist.getName());
+            }
+        }*/
         return result;
     }
 
@@ -178,7 +197,6 @@ public class Film implements Parcelable {
         return director;
     }
 
-    @Exclude
     public void setDirector(Artist director) {
         this.director = director;
     }
@@ -188,7 +206,6 @@ public class Film implements Parcelable {
         return writer;
     }
 
-    @Exclude
     public void setWriter(Artist writer) {
         this.writer = writer;
     }
@@ -199,9 +216,9 @@ public class Film implements Parcelable {
 
     //Usar WordUtils.capitalize da lib: compile 'org.apache.commons:commons-lang3:3.5'
     public void setTitle(String title) {
-        String aux = WordUtils.capitalize(title);
-        this.title = StringUtils.alphabeticTitle(aux);
-        this.noDiacriticsTitle = StringUtils.removeDiacritics(aux);
+//        String aux = WordUtils.capitalize(title);
+        this.title = StringUtils.alphabeticTitle(title);
+        this.noDiacriticsTitle = StringUtils.removeDiacritics(title);
     }
 
 
@@ -210,8 +227,8 @@ public class Film implements Parcelable {
     }
 
     public void setOriginalTitle(String originalTitle) {
-        String aux = WordUtils.capitalize(originalTitle);
-        this.originalTitle = StringUtils.alphabeticTitle(aux);
+//        String aux = WordUtils.capitalize(originalTitle);
+        this.originalTitle = StringUtils.alphabeticTitle(originalTitle);
     }
 
     public long getReleaseDate() {
@@ -220,6 +237,14 @@ public class Film implements Parcelable {
 
     public void setReleaseDate(long releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public long getWatchDate(){
+        return watchDate;
+    }
+
+    public void setWatchDate(long watchDate) {
+        this.watchDate = watchDate;
     }
 
     public int getLength() {
@@ -281,22 +306,21 @@ public class Film implements Parcelable {
         return cast;
     }
 
-    @Exclude
     public void setCast(List<Artist> cast) {
         this.cast = cast;
     }
 
     @Exclude
-    public String castToListViewShow(){
-        StringBuilder builder   = new StringBuilder();
-        List<Artist> artists    = getCast();
+    public String castToListViewShow() {
+        StringBuilder builder = new StringBuilder();
+        List<Artist> artists = getCast();
 
         Collections.shuffle(artists);
 
         Iterator<Artist> iterator = artists.iterator();
         while (iterator.hasNext()) {
             builder.append(iterator.next().getName());
-            if (iterator.hasNext()){
+            if (iterator.hasNext()) {
                 builder.append(", ");
             }
 
@@ -340,6 +364,16 @@ public class Film implements Parcelable {
     }
 */
     @Exclude
+    public String getWatchDateAsString(){
+        long date = this.watchDate;
+        String formatDate = null;
+        Calendar calendar = Calendar.getInstance();
+        DateFormat dateFormat = DateFormat.getDateInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MMM/yyyy");
+        formatDate = simpleDateFormat.format(date);
+        return date != 0 ? formatDate : null;
+    }
+    @Exclude
     public int getReleaseYear() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(this.getReleaseDate());
@@ -347,7 +381,7 @@ public class Film implements Parcelable {
     }
 
     @Exclude
-    public String getNormalizedTitle(){
+    public String getNormalizedTitle() {
         return this.title != null ? StringUtils.normalizeTitle(title) : null;
     }
 

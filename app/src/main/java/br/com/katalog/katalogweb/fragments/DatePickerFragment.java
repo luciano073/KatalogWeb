@@ -23,11 +23,13 @@ public class DatePickerFragment extends DialogFragment
 
     public static final String TAG = "DatePickerFragment";
     private long mDateTime;
+    private int mViewFlag;
     private Calendar mCalendar;
 
-    public static DatePickerFragment newInstance(long date) {
+    public static DatePickerFragment newInstance(long date, int view) {
         Bundle bundle = new Bundle();
         bundle.putLong("date", date);
+        bundle.putInt("view", view);
         DatePickerFragment dialog = new DatePickerFragment();
         dialog.setArguments(bundle);
         return dialog;
@@ -38,6 +40,7 @@ public class DatePickerFragment extends DialogFragment
         super.onCreate(savedInstanceState);
         mCalendar = Calendar.getInstance();
         mDateTime = getArguments().getLong("date");
+        mViewFlag = getArguments().getInt("view");
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -69,10 +72,10 @@ public class DatePickerFragment extends DialogFragment
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         DatePickerFragmentListener listener = (DatePickerFragmentListener) getActivity();
-        listener.onDateListener(year, monthOfYear, dayOfMonth);
+        listener.onDateListener(mViewFlag, year, monthOfYear, dayOfMonth);
     }
 
     public interface DatePickerFragmentListener {
-        void onDateListener(int year, int month, int dayOfYear);
+        void onDateListener(int view, int year, int month, int dayOfYear);
     }
 }

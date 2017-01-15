@@ -18,15 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import br.com.katalog.katalogweb.R;
 import br.com.katalog.katalogweb.databinding.FragmentMainBinding;
-import br.com.katalog.katalogweb.listeners.ArtistEvenBus;
-import br.com.katalog.katalogweb.listeners.FilmEventBus;
-import br.com.katalog.katalogweb.models.ArtistDAO;
 import br.com.katalog.katalogweb.models.DigitalMedia;
 import br.com.katalog.katalogweb.utils.Constants;
 
@@ -87,13 +80,13 @@ public class MainFragment extends Fragment {
 //        EventBus.getDefault().register(this);
 //        ArtistDAO.getInstance();
         mArtistRef = FirebaseDatabase.getInstance()
-                .getReference(Constants.ARTIST_DATABASE_ROOT_NODE);
+                .getReference(Constants.ARTISTS_DBREF);
         mFilmsRef = FirebaseDatabase.getInstance()
-                .getReference(Constants.FILM_DATABASE_ROOT_NODE);
+                .getReference(Constants.FILMS_DBREF);
         mBooksRef = FirebaseDatabase.getInstance()
-                .getReference(Constants.BOOK_DATABASE_ROOT_NODE);
+                .getReference(Constants.BOOKS_DBREF);
         mBluraysRef = FirebaseDatabase.getInstance()
-                .getReference(Constants.DIGITAL_MEDIA_DATABASE_ROOT_NODE);
+                .getReference(Constants.DIGITAL_MEDIA_DBREF);
 
     }
 

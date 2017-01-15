@@ -5,22 +5,25 @@ package br.com.katalog.katalogweb.utils;
  */
 
 public interface Constants {
-    String FILM_DATABASE_ROOT_NODE      = "Films";
-    String FILM_DATABASE_CHILD_DIRECTOR = "Director";
-    String FILM_DATABASE_CHILD_CAST     = "Cast";
-    String FILM_DATABASE_CHILD_WRITER   = "Writer";
-    String BOOK_DATABASE_ROOT_NODE      = "books";
-    String BOOK_DATABASE_CHILD_WRITER   = "writer";
-    String BOOK_DATABASE_CHILD_COLORS   = "colors";
-    String BOOK_DATABASE_CHILD_DRAWINGS = "drawings";
-    String DIGITAL_MEDIA_DATABASE_ROOT_NODE    = "digital_media";
-    String DIGITAL_MEDIA_CHILD_FILM     = "film";
-    String ARTIST_DATABASE_ROOT_NODE    = "Artists";
-    String ARTIST_DATABASE_CHILD_ACTED  = "Acted";
-    String ARTIST_DATABASE_CHILD_DIRECTED  = "Directed";
-    String ARTIST_DATABASE_CHILD_WROTE     = "Wrote";
-    String ARTIST_DATABASE_CHILD_DREW      = "Drew";
-    String ARTIST_DATABASE_CHILD_PAINTED   = "painted";
+    String FILMS_DBREF = "Films";
+    String FILM_DIRECTOR_CHILD_DBREF = "Director";
+    String FILM_CAST_CHILD_DBREF = "Cast";
+    String FILM_WRITER_CHILD_DBREF = "Writer";
+    String BOOKS_DBREF = "books";
+    String BOOK_WRITER_CHILD_DBREF = "writer";
+    String BOOK_COLORS_CHILD_DBREF = "colors";
+    String BOOK_DRAWINGS_CHILD_DBREF = "drawings";
+    String DIGITAL_MEDIA_DBREF = "digital_media";
+    String DIGITAL_MEDIA_CHILD_FILM = "film";
+    String ARTISTS_DBREF = "Artists";
+    String ARTIST_DATABASE_CHILD_ACTED = "Acted";
+    String ARTIST_DATABASE_CHILD_DIRECTED = "Directed";
+    String ARTIST_DATABASE_CHILD_WROTE = "Wrote";
+    String ARTIST_DATABASE_CHILD_DREW = "Drew";
+    String ARTIST_DATABASE_CHILD_PAINTED = "painted";
+    String FILMS_DBREF_WITH_SLASH = "/Films/";
+    String FILM_CONTRIBUTORS_DBREF = "film-contributors";
 
-
+    String ARTIST_WORKS_DBREF_WITH_SLASH = "/artist-works/";
+    String ARTIST_WORKS_DBREF = "artist-works";
 }

@@ -16,15 +16,11 @@ import br.com.katalog.katalogweb.utils.StringUtils;
  */
 public class Artist implements Parcelable {
     private String name;
-    private String birthDate;
+    private long birthDate;
     private String noDiacriticsName;
-    private String workName;
     @Exclude
     private String id;
-    private Map<String, Object> directed;
-    private Map<String, Object> wrote;
-    private Map<String, Object> acted;
-    private Map<String, Object> drew;
+
 
 
     public Artist() {
@@ -40,10 +36,19 @@ public class Artist implements Parcelable {
         this.name       = name;
     }
 
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("name", this.name);
+        result.put("birthDate", this.birthDate);
+        result.put("noDiacriticsName", this.noDiacriticsName);
+
+        return result;
+    }
     // Parcelable
     protected Artist(Parcel in) {
         name                = in.readString();
-        birthDate           = in.readString();
+        birthDate           = in.readLong();
         noDiacriticsName    = in.readString();
         id                  = in.readString();
     }
@@ -51,7 +56,7 @@ public class Artist implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(name);
-        parcel.writeString(birthDate);
+        parcel.writeLong(birthDate);
         parcel.writeString(noDiacriticsName);
         parcel.writeString(id);
     }
@@ -85,11 +90,11 @@ public class Artist implements Parcelable {
         this.noDiacriticsName = StringUtils.removeDiacritics(aux);
     }
 
-    public String getBirthDate() {
+    public long getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(String birthDate) {
+    public void setBirthDate(long birthDate) {
         this.birthDate = birthDate;
     }
 

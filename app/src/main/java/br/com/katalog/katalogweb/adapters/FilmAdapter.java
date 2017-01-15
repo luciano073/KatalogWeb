@@ -9,17 +9,24 @@ import android.view.View;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.katalog.katalogweb.R;
 import br.com.katalog.katalogweb.fragments.ImageShowFragment;
 import br.com.katalog.katalogweb.listeners.FilmClickListener;
 import br.com.katalog.katalogweb.listeners.FilmEventBus;
+import br.com.katalog.katalogweb.models.Artist;
 import br.com.katalog.katalogweb.models.Film;
 import br.com.katalog.katalogweb.models.FilmDAO;
+import br.com.katalog.katalogweb.utils.Constants;
 import br.com.katalog.katalogweb.utils.FilmViewHolder;
 
 /**
@@ -39,7 +46,7 @@ public class FilmAdapter extends FirebaseRecyclerAdapter<Film, FilmViewHolder> {
 
     @Override
     protected Film parseSnapshot(DataSnapshot snapshot) {
-        Film film = snapshot.getValue(Film.class);
+        final Film film = snapshot.getValue(Film.class);
         film.setId(snapshot.getKey());
         FilmDAO filmDAO = FilmDAO.getInstance();
 
@@ -50,11 +57,13 @@ public class FilmAdapter extends FirebaseRecyclerAdapter<Film, FilmViewHolder> {
         film.setCast(filmDAO.retrieveCast(snapshot));
 
         filmDAO.cleanUp();
+
         return film;
     }
 
     @Override
     protected void populateViewHolder(final FilmViewHolder viewHolder, final Film model, int position) {
+
         viewHolder.setFilm(model);
 
         viewHolder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
@@ -74,6 +83,8 @@ public class FilmAdapter extends FirebaseRecyclerAdapter<Film, FilmViewHolder> {
                 showFragment.show(fm, ImageShowFragment.TAG);
             }
         });
+
+        viewHolder.mBinding.executePendingBindings();
 
 
     }

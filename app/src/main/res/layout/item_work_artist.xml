@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View"/>
+        <variable
+            name="book"
+            type="br.com.katalog.katalogweb.models.Book" />
+        <variable
+            name="film"
+            type="br.com.katalog.katalogweb.models.Film"/>
+        <variable
+            name="object"
+            type="java.lang.Object"/>
+
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="5dp">
+
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="@dimen/image_width_medium"
+                android:layout_height="@{@dimen/image_width_medium / (float)0.65, default=wrap_content}"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:background="@drawable/image_boder"
+                android:src="@{object}"
+                android:scaleType="fitCenter"
+                app:placeholder="@{@drawable/image_select}"/>
+
+
+    </android.support.v7.widget.CardView>
+</layout>
+
